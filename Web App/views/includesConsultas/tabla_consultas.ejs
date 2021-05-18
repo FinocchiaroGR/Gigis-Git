@@ -1,0 +1,137 @@
+<div>
+  <% if(estadoConsulta) { %> <!-- Tabla de un solo programa -->
+    <table class="striped highlight responsive-table">
+      <thead>
+        <tr class="center-aligned">
+
+          <td>Participantes</td>
+
+          <% if(mostrarSexEdad) { %>
+            <td>Sexo</td>
+            <td>Edad</td>
+          <% } %>
+
+          <% if(mostrarCalif) { %>
+
+            <td> Calificación Inicial <br> <%= programas[listaProg[0]-1].nombrePrograma %> <br> Ciclo-<%= intervalos.cicloIni %> </td>
+
+            <% let cicloCont = 0, progCont = 0; %>
+            <% for(let i = 0; i<intervalos.cant; i++) { %>
+              <td> Calificación Final <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br> Ciclo-<%= (parseInt(intervalos.cicloIni)+parseInt(cicloCont)) %> </td>
+              
+              <% if(((progCont+1) % listaProg.length) === 0){ %>
+                <% progCont = 0; cicloCont++;%>
+              <% } else { %>
+                <%progCont++;%>
+              <% } %>
+
+            <% } %>
+            <td>Calificación Inicial</td>
+            <td>Calificación Final</td>
+            <td>Promedio</td>
+            <td>Avance</td>
+          <% } %>
+        </tr>
+      </thead>
+      <% for(let i = 0; i < datos.length; i++) { %>
+        <tr>
+
+          <td><%= datos[i].nombreUsuario %> <%= datos[i].apellidoPaterno %> <%= datos[i].apellidoMaterno %></td>
+
+          <% if(mostrarSexEdad) { %>
+            <td><%= datos[i].sexo %></td>
+            <td><%= datos[i].Edad_Matriculacion %></td>
+          <% } %>
+
+          <% if(mostrarCalif) { %>
+            <td><%= Math.round((datos[i][col_Datos[6]['name']]) * 10) / 10 %> </td>
+
+            <% let acumProm=0,contProm = 0,flag=0;%>
+            <% for(let j = 7; j<col_Datos.length-2; j+=2) { //7 porque es la primera calif Final %>
+
+              <td><%= Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10 %> </td>
+
+              <% if(datos[i][col_Datos[j]['name']] !== null){ %>
+                <% acumProm += Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10; %>
+                <% contProm++; flag = j; %>
+              <% } %>
+
+            <% } %>
+            <td><%= Math.round((datos[i][col_Datos[6]['name']] ) * 10) / 10 %></td>
+            <td><%= Math.round((datos[i][col_Datos[flag]['name']] ) * 10) / 10 %></td>
+            <td><%= Math.round((acumProm/contProm ) * 10) / 10 %></td>
+            <td><%= Math.round(((datos[i][col_Datos[flag]['name']] - datos[i][col_Datos[6]['name']])/(programas[listaProg[0]].puntajeMaximo-1)*100 ) * 10) / 10 %>%</td>
+          <% } %>
+        </tr>
+      <% } %>
+      <tbody>
+        
+      </tbody>
+  </table>
+  <% } else { %> <!-- Tabla de varios programas -->
+    <table class="striped highlight responsive-table">
+      <thead>
+        <tr>
+
+          <td>Participantes</td>
+
+          <% if(mostrarSexEdad) { %>
+            <td>Sexo</td>
+            <td>Edad</td>
+          <% } %>
+
+          <% if(mostrarCalif) { %>
+
+            <% if(!califOava) { %>
+
+              <% let cicloCont = 0, progCont = 0;%>
+              <% for(let i = 0; i<intervalos.cant; i++) { %>
+                <td>Calificación <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br>Ciclo-<%= parseInt(intervalos.cicloIni)+cicloCont %> </td>
+               
+                <% if(((progCont+1) % listaProg.length) === 0){%>
+                  <% progCont = 0; cicloCont++;%>
+                <% }else{ %>
+                  <%progCont++; %>
+                <% } %>
+              <% } %>
+            <% } else { %>
+
+              <% let cicloCont = 0, progCont = 0;%>
+              <% for(let i = 0; i<intervalos.cant; i++) { %>
+                <td>Avance <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br>Ciclo-<%= parseInt(intervalos.cicloIni)+cicloCont %> </td>
+                
+                <% if(((progCont+1) % listaProg.length) === 0){%>
+                  <% progCont = 0; cicloCont++;%>
+                <% }else{ %>
+                  <%progCont++; %>
+                <% } %>
+              <% } %>
+            <% } %>
+          <% } %>
+        </tr>
+      </thead>
+      <tbody>
+        <% for(let i = 0; i < datos.length; i++) { %>
+          <tr>
+            <td><%= datos[i].nombreUsuario %> <%= datos[i].apellidoPaterno %> <%= datos[i].apellidoMaterno %></td>
+            <% if(mostrarSexEdad) { %>
+              <td><%= datos[i].sexo %></td>
+              <td><%= datos[i].Edad_Matriculacion %></td>
+            <% } %>
+            <% if(mostrarCalif) { %>
+              <% if(!califOava) { %>
+                <% for(let j = 7; j<col_Datos.length-2; j+=2) { %>
+                  <td><%= Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10 %> </td>
+                <% } %>
+              <% } else { %>
+                <% for(let j = 6; j<col_Datos.length-2; j++) { %>
+                  <td><%= Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10 %> %</td>
+                <% } %>
+              <% } %>
+            <% } %>
+          </tr>
+        <% } %>
+      </tbody>
+    </table> 
+<% } %>                
+</div>

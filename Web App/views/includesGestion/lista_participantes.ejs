@@ -1,0 +1,39 @@
+<table class="highlight">
+    <thead>
+    <tr>
+        <th data-field="nombre">Nombre</th>
+        <th data-field="titulo">Estatus</th>
+        <th data-field="editar"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <% for (let participante of participantes) { %>  
+        <tr>
+            <td  style="cursor: pointer;"><a href="<%= participante.ruta %>" class = "black-text"><%= participante.nombreUsuario %></a></td>
+            <% if (participante.estatus === 'A')  { %>  
+                <td>Activo</td>
+            <% }else if(participante.estatus === 'I'){ %>  
+                <td>Inactivo</td>
+            <% }else if(participante.estatus === 'B'){%>
+                <td>Baja permanente</td>
+            <% } %>
+            <td>
+            <a href="<%= participante.login %>-editar" class = "black-text"><i class="material-icons left" style="cursor: pointer;">edit</i></a>
+                <!-- Modal Eliminar Participante -->
+            <a class="waves-effect waves-light modal-trigger black-text" href="#modalEliminarP"><i class="material-icons left">delete</i></a>
+            </td>
+        </tr>
+    <% } %>
+    <!-- Modal Structure Eliminar Participante-->
+    <div id="modalEliminarP" class="modal">
+        <div class="modal-content">
+        <h4>Eliminar participante</h4>
+        <p>¿Está seguro de eliminar este participante?</p>
+        </div>
+        <div class="modal-footer">
+        <a href="#" class="modal-close waves-effect btn-flat eliminarP">Sí</a>
+        <a href="./" class="modal-close waves-effect btn-flat">Cancelar</a>
+        </div>
+    </div><!-- Fin Modal Structure Eliminar Participante-->
+    </tbody>
+</table>

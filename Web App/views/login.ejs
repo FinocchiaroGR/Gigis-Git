@@ -1,0 +1,41 @@
+<%- include('include/head.ejs') %>
+
+<body>
+    <div class="section1">
+        <img class="centeredimage" alt="Imagen Login" src="<%= link %>">
+    </div>
+    <div class="section2">
+        <div class="centered">
+            <div class="z-depth-1 grey lighten-4 row box-white">  
+                <img alt="Logo escrito Gigis" style="display: block; width: 50%; margin-left: auto; margin-right: auto;" src="<%= imagen %>">
+                <% if (error !== false) { %>
+                <span style="color: #ff3d41;"><%- error %></span>
+                <% } %>
+                <form action= "login" method="POST">
+                    <div class="input-field col s12">
+                        <label for="username">Email</label>
+                        <input type="text" name="username" required>
+                    </div>
+                    
+                    <div class="input-field col s12">
+                        <label for="password">Clave</label>
+                        <input class="input-field" type="password" name="password" required minlength="8">
+                    </div>
+
+
+                    <div class="input-field col s12">
+                        <button style="color: rgb(255, 255, 255); width: 100%;" class="btn light-blue darken-1 waves-effect waves-light" type="submit" name="action">Entrar
+                            <i class="material-icons right">send</i>
+                        </button>
+                    </div>
+                    <div style="text-align: center;">
+                        <a style="color: rgb(37, 34, 255);" href="">Olvidaste la contraseña?</a>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<%- include('include/footer.ejs') %>

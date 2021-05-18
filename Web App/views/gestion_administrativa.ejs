@@ -1,0 +1,21 @@
+<%- include('include/head.ejs') %>
+<%- include('include/titleBar.ejs') %>
+<%- include('include/sideNavBar.ejs') %>     
+        <div class="row">
+            <% for (let tab of tabGestion) { %>
+                <a href="<%= tab.ruta %>">
+                    <div class="col s12 m4">
+                        <div class="card">
+                            <div class="card-image">
+                                <img src="<%= tab.imagen %>">
+                            </div>
+                            <div class="card-action">
+                                <span><strong><%= tab.nombre %></strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            <% } %>
+        </div>
+ 
+<%- include('include/footer.ejs') %>

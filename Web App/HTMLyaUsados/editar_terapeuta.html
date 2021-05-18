@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="57x57" href="favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="./css/materialize.css">
+    <link rel="stylesheet" href="./css/materialize.min.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/gestion.css">
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+    <title>Editar perfil</title>
+</head>
+<body>
+    <header>
+        <nav class="top-nav navTitulo"> 
+          <div class="container ">
+            <div class="nav-wrapper">
+              <div class="row">
+                <div class="col s12 m12 l11 offset-l3 xl12 offset-xl2">
+                  <a href="#" data-target="nav-mobile" class="top-nav black-text sidenav-trigger full hide-on-large-only"><i class="material-icons">menu</i></a><strong class="Titulo">Alvin Lira</strong> 
+                  <ul class="right">
+                    <li><a href="perfil_terapeuta.html"><i class="material-icons black-text" style="display: visible;">arrow_back</i></a></li>
+                    <li><a href="sig.html"><i class="material-icons black-text" style="display: none;">arrow_forward</i></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="divider"></div>
+        </nav>
+        <ul id="nav-mobile" class="sidenav sidenav-fixed">
+              <li><div class="imagen-logo"><a href="./programas.html"><img src="https://gigisplayhouse.org/sacramento/files/2018/04/G-heart-only.png" alt="logo-gigis" width="60%"></a></div></li>
+              <li><a href=""><i class="material-icons">account_circle</i>Cuenta</a></li>
+              <div class="divider"></div>
+              <li><a class = "orange accent-1" href="./gestion_administrativa.html"><i class="material-icons">folder_shared</i>Gestión Administrativa</a></li>
+              <div class="divider"></div>
+              <li><a href="./programas.html"><i class="material-icons">art_track</i>Programas</a></li>
+              <div class="divider"></div>
+              <li><a href="./consultas.html"><i class="material-icons">insert_chart</i>Consultas</a></li>
+          </ul>
+      </header>
+    
+    <main class="container">
+      <div class="row">
+        <div class="col s12 m12 l11 offset-l3 xl12 offset-xl2">
+          <div class="row">
+              <div class="col m1">
+                  <h2></h2>
+                  <div class="vl"></div>
+              </div>
+              <div class="col s11 m3">
+                <form>
+                  <ul>
+                    <li class = "camposPerfil"><strong><br>Título</strong></li>
+                    <li>
+                      <div class="input-field ">
+                        <input id="titulo" type="text" class="validate">
+                        <label for="titulo">Título</label>
+                      </div>
+                    </li>
+                    <li class = "camposPerfil"><strong><br>Correo</strong></li>
+                    <li>
+                      <div class="input-field ">
+                        <input id="correo" type="text" class="validate">
+                        <label for="correo">Correo</label>
+                      </div>
+                    </li>
+                    <li class = "camposPerfil"><strong><br>Estatus</strong></li>
+                    <li>
+                      <div class="input-field ">
+                        <input id="estatus" type="text" class="validate">
+                        <label for="estatus">Estatus</label>
+                      </div>
+                    </li>
+                    
+                  </ul>
+                </form>
+              </div>
+              <div class="col s1 m1"></div>
+              <div class="col s11 m2">
+                <form>
+                  <ul>
+                    <li class = "camposPerfil"><strong><br>Currículum</strong></li>
+                    <li><a class="waves-effect waves-light btn-small white black-text"><i class="material-icons left">file_upload</i>Subir</a></li>
+                    <li class = "camposPerfil"><strong><br>Roles</strong></li>
+                    <li>
+                      <div class="input-field">
+                        <select multiple>
+                          <option value="1">Terapeuta</option>
+                          <option value="2">Gestor</option>
+                          <option value="3">Administrador</option>
+                        </select>
+                        <label>Selecciona los roles que desees asignar.</label>
+                      </div>
+                    </li>
+                    <!-- Modal Trigger -->
+                    <a class="waves-effect waves-light modal-trigger btn-small white black-text" href = "#modalNuevoRol"><i class="material-icons left">border_color</i>Nuevo rol</a>
+                  </ul>
+              </div>
+              <div class="col m2 s12">
+                <p></p>
+                <!-- Modal Trigger -->
+                <a class="waves-effect waves-light modal-trigger btn-small light-green accent-4" href = "#modalEliminarT"><i class="material-icons left">delete</i>Eliminar</a>
+                <!-- Modal Structure -->
+                <div id="modalEliminarT" class="modal">
+                  <div class="modal-content">
+                    <h4>Eliminar terapeuta</h4>
+                    <p>¿Está seguro de eliminar al terapeuta?</p>
+                  </div>
+                  <div class="modal-footer">
+                    <a href="./gestion_usuarios.html" class="modal-close waves-effect waves-green btn-flat">Sí</a>
+                    <a href="./editar_terapeuta.html" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col m2">
+                <p></p>
+                <!-- Modal Trigger -->
+                <a class="waves-effect waves-light modal-trigger btn-small light-green accent-4" href = "#modalGuardarT"><i class="material-icons left">save</i>Guardar</a>
+                <!-- Modal Structure -->
+                <div id="modalGuardarT" class="modal">
+                  <div class="modal-content">
+                    <h4>Cambios guardados</h4>
+                    <p>Los cambios se han realizado con éxito.</p>
+                  </div>
+                  <div class="modal-footer">
+                    <a href="./perfil_terapeuta.html" class="modal-close waves-effect waves-green btn-flat">Aceptar</a>
+                  </div>
+                </div>
+              </div>  
+          </div>
+        </div>
+      </div>
+      <!-- Modal Structure -->
+          <div id="modalNuevoRol" class="modal">
+            <div class="modal-content">
+              <form>
+                <h3>Nuevo rol</h3>
+                <ul>
+                  <li><strong><br>Nombre del nuevo rol</strong></li>
+                  <li>
+                    <div class="input">
+                      <input id="nombre-rol" type="text" class="validate"  placeholder="Rol">
+                    </div>
+                  </li>
+                  <li><strong><br>Permisos</strong></li>
+                  <li>
+                    <table class="highlight">
+                      <thead>
+                        <tr>
+                            <th data-field="admin">Administrador</th>
+                            <th data-field="gestor">Gestor</th>
+                            <th data-field="terapeuta">Terapeuta</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <label>
+                              <input type="checkbox" />
+                              <span>Función1</span>
+                            </label>
+                          </td>
+                          <td>
+                            <label>
+                              <input type="checkbox" />
+                              <span>Función2</span>
+                            </label>
+                          </td>
+                          <td>
+                            <label>
+                              <input type="checkbox" />
+                              <span>Función3</span>
+                            </label>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <label>
+                              <input type="checkbox" />
+                              <span>Función4</span>
+                            </label>
+                          </td>
+                          <td>
+                            <label>
+                              <input type="checkbox" />
+                              <span>Función5</span>
+                            </label>
+                          </td>
+                          <td>
+                            <label>
+                              <input type="checkbox" />
+                              <span>Función6</span>
+                            </label>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <label>
+                              <input type="checkbox" />
+                              <span>Función7</span>
+                            </label>
+                          </td>
+                          <td>
+                            <label>
+                              <input type="checkbox" />
+                              <span>Función8</span>
+                            </label>
+                          </td>
+                          <td>
+                            <label>
+                              <input type="checkbox" />
+                              <span>Función9</span>
+                            </label>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </li>
+                </ul>
+              </form>
+            </div>
+            <div class="modal-footer">
+                  <a href="./editar_terapeuta.html" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
+                  <a href="./editar_terapeuta.html" class="modal-close waves-effect waves-green btn-flat">Agregar</a>
+                </div>
+            </div>
+          </div>
+    </main>
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="./js/materialize.js"></script>
+    <script src="./js/materialize.min.js"></script>
+    <script src="./js/main.js"></script>
+    <script src="./js/gestion_usuario.js"></script>
+</body>
+</html>

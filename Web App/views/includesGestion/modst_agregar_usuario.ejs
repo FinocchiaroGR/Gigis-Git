@@ -1,0 +1,76 @@
+<form action="/gestionAdmin/gestionUsuarios" method="POST" enctype="multipart/form-data">
+  <div class="modal-content">
+      <h3>Nuevo usuario</h3>
+      <label> * Campos obligatorios.</label>
+      <ul>
+        <li><strong>Nombre *</strong></li>
+        <li>
+          <div class="input-field">
+            <input id="nombre" name="nombre" type="text" class="validate"  placeholder="Nombre(s)" required>
+          </div>
+        </li>
+        <li><strong><br>Apellido paterno</strong></li>
+        <li>
+          <div class="input-field">
+            <input id="apellidoP" name="apellidoP" type="text" class="validate"  placeholder="Apellido paterno">
+          </div>
+        </li>
+        <li><strong><br>Apellido materno</strong></li>
+        <li>
+          <div class="input-field">
+            <input id="apellidoM" name="apellidoM" type="text" class="validate"  placeholder="Apellido materno">
+          </div>
+        </li>
+        <li><strong><br>Correo *</strong></li>
+        <li>
+          <div class="input-field">
+            <input id="correo" name="correo" type="email" class="validate"  placeholder="correo@mail.com" onchange="generarContra();" required>
+            <span class="helper-text" data-error="Introduce un correo válido"></span>
+          </div>
+        </li>
+        <li><strong>Contraseña * </strong></li>
+        <li>
+          <div class="input-field">
+            <input  id="contra" name= "contra"  type="text" class="validate" placeholder="contraseña" required>
+          </div>
+        </li>
+        <li><strong><br>Roles *</strong></li>
+        <li>
+          <div class="input-field m4" required >
+            <select name="selRol" id= "selRol" onchange="camposTerapeuta(this)" multiple required>
+              <% for (let rol of roles) { %>
+                <% if (rol.idRol != 1) { %> 
+                  <option value="<%= rol.idRol %>"><%= rol.nombre %></option>
+                <% } %>
+              <% } %>
+            </select>
+            <label>Selecciona los roles que desees asignar.</label>
+          </div>
+        </li>
+        <li style = "display:none" id = "campoT1"><strong><br>Formación profesional</strong></li>
+        <li style = "display:none" id = "campoT2">
+          <div class="input-field ">
+              <input id="titulo" name="titulo" type="text" class="validate" placeholder="Título">
+          </div>
+        </li>
+        <li style = "display:none" id = "campoT3"><strong><br>Currículum</strong></li>
+        <li style = "display:none" id = "campoT4">
+            <div class="file-field input-field">
+                <div class="waves-effect waves-light btn-small white black-text">
+                    <i class="material-icons left">file_upload</i>Subir
+                    <input type="file" name="cv">
+                </div>
+                <div class="file-path-wrapper">
+                  <input class="file-path validate" type="text" placeholder="Currículum">
+                </div>
+                <br>
+            </div>
+        </li>
+      </ul>
+  </div>
+  <div class="modal-footer container">
+    <button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Registrar</button>
+    <label style="visibility:hidden">**</label>
+  </div>
+  <br>
+</form>
