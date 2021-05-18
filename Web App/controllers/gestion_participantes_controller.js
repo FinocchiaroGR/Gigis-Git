@@ -3,7 +3,7 @@ const Usuario = require('../models/usuarios');
 const Participante = require('../models/participantes');
 const Usuario_Rol = require('../models/usuarios_roles');
 
-const arrows = Arrow.fetchAll().catch((err) => {console.log(err)});
+const arrows = Arrow.fetchAll();
 const usuarios = Usuario.fetchAll().catch((err) => {console.log(err)});
 const participantes = Participante.fetchAll().catch((err) => {console.log(err)});
 const usuarios_roles = Usuario_Rol.fetchAll().catch((err) => {console.log(err)});
