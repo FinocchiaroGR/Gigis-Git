@@ -71,7 +71,7 @@ module.exports = class Ciclo {
 
   static fetchAniosPasados(){
     return db.execute(
-      'SELECT YEAR(fechaInicial) AS anio FROM ciclos WHERE YEAR(fechaInicial)< YEAR(CURRENT_DATE) GROUP BY YEAR(fechaInicial) DESC'
+      'SELECT YEAR(fechaInicial) AS anio FROM ciclos WHERE YEAR(fechaInicial)< YEAR(CURRENT_DATE) GROUP BY YEAR(fechaInicial) ORDER BY fechaInicial DESC'
     );
   }
   static fetchFechaFinalUltimoCiclo(){
