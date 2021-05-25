@@ -9,7 +9,7 @@ const pool = mysql.createPool({
     // host : 'gigisplayhousebd-do-user-9229702-0.b.db.ondigitalocean.com',
     // port : '25060',
     // database : 'gigisplayhousedb'
-    database : 'GigisT'
+    database : 'mysql'
 });
 
 module.exports = pool.promise();
