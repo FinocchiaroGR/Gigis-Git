@@ -1,0 +1,26 @@
+<table class="highlight">
+    <thead>
+    <tr>
+        <th data-field="nombre">Nombre</th>
+        <th data-field="titulo">Estatus</th>
+        <th data-field="editar"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <% for (let participante of participantes) { %>  
+        <tr>
+            <td  style="cursor: pointer;"><a href="<%= participante.ruta %>" class = "black-text"><%= participante.nombreUsuario %></a></td>
+            <% if (participante.estatus === 'A')  { %>  
+                <td>Activo</td>
+            <% }else if(participante.estatus === 'I'){ %>  
+                <td>Inactivo</td>
+            <% }else if(participante.estatus === 'B'){%>
+                <td>Baja permanente</td>
+            <% } %>
+            <td>
+            <a href="<%= participante.login %>-editar" class = "black-text"><i class="material-icons left" style="cursor: pointer;">edit</i></a>
+            </td>
+        </tr>
+    <% } %>
+    </tbody>
+</table>

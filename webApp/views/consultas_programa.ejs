@@ -1,0 +1,19 @@
+<%- include('include/head.ejs') %>
+<%- include('include/titleBar.ejs') %>
+<%- include('include/sideNavBar.ejs') %>
+
+    <br><br>
+    <h5>Terapeuta: <%= datoGrupo.nombreUsuario %><%= datoGrupo.apellidoPaterno %><%= datoGrupo.apellidoMaterno %></h5>
+    <br><br>
+    <h6>Promedio: Calificaciones - <%= datoGrupo.Prom_CaliF %> Avance - <%= datoGrupo.Prom_Ava %> %</h6>
+    <br><br>
+
+    <%- include('includesConsultas/tabla_consultas_grupo.ejs') %>
+
+    <br><br>
+    <form action="/consultas/Grupo/<%= datoGrupo.idGrupo %>" method="post">
+        <div class="row">
+            <button type="submit" class="waves-effect right waves-light btn-large"> Descargar archivo </button>
+        </div>
+    </form>
+<%- include('include/footer.ejs') %>

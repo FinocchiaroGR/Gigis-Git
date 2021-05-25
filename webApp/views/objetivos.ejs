@@ -1,0 +1,167 @@
+<%- include('include/head.ejs') %>
+<%- include('include/titleBar.ejs') %>
+<%- include('include/sideNavBar.ejs') %>  
+    
+<div class="row">
+    <div class="col s12 m4">     
+        <div class="row">
+            <div class="input-field col s12" >
+            <i class="material-icons prefix">search</i>
+            <input type="text" id="buscarObjetivo" class="autocomplete" oninput="buscarObjetivo()">
+            <label for="buscarObjetivo">Objetivo</label>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="row">
+          <div class="input-field col s12">
+            <!-- Modal Agregar -->
+             <a class="waves-effect waves-light btn-small modal-trigger light-green accent-4" href="#agregarObjetivo"><i class="material-icons left">add_circle</i>Agregar</a>
+          </div>
+        </div>
+    </div>
+    <!-- Inicia Modal Structure agregar objetivo-->
+    <form action="/gestionAdmin/gestionProgramas/objetivos/agregar-objetivo" method="POST">
+        <div id="agregarObjetivo" class="modal">
+            <div class="modal-content">
+                <h3>Nuevo objetivo</h3>
+                <input type="hidden" name="idNivel" value="<%=idNivel%>">
+            <ul>
+                <li><strong><br>Descripción *</strong></li>
+                <li>
+                <div class="input">
+                    <input name="descripcion" type="text" class="validate"  placeholder="Descripción" required>
+                </div>
+                </li>
+            </ul>
+        </div>
+        <div class="modal-footer">
+            <br>
+            <button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Agregar<i class="material-icons right">send</i></button>
+        </div>
+        </div><!--Fin Modal Structure agregar programa-->
+    </form>
+</div>
+
+<ul class="collection with-header" id="lista-objetivos"> 
+    <li class="collection-header"><h4>Objetivos</h4></li>
+    <% let i = 1; %>
+    <% for (objetivo of objetivos) { %>  
+        <% if (objetivo.estatus === 1) { %>
+            <li class="collection-item">
+                <%= i%>.- <%= objetivo.descripcion %>
+                <span class="badge">
+                    <!-- Modal Editar -->
+                    <a class="waves-effect waves-light modal-trigger black-text" href="#EditarObjetivo" onclick="obtenerIdObj(<%=objetivo.idObjetivo%>)"><i class="material-icons left">edit</i></a>
+                    <!-- Modal Eliminar -->
+                    <a class="waves-effect waves-light modal-trigger black-text" href="#modalEliminarObj" onclick="eliminarObj(<%=objetivo.idObjetivo%>)"><i class="material-icons left">delete</i></a>
+                </span>
+            </li>
+            <% i++; %>
+        <% } %>
+    <% } %>
+</ul>
+
+<!-- Modal Structure Editar Objetivo-->
+<form action="/gestionAdmin/gestionProgramas/objetivos/editar-objetivo" method="POST">
+    <div id="EditarObjetivo" class="modal">
+        <div class="modal-content">
+            <h3>Editar objetivo</h3>
+
+            <input type="hidden" name="idNivel" value="<%=idNivel%>">
+            <div id="idObjetivo"></div>
+            <ul>
+                <li><strong><br>Descripción *</strong></li>
+                <li>
+                <div class="input">
+                    <input name="descripcion" type="text" class="validate"  placeholder="Descripción">
+                </div>
+                </li>
+            </ul>
+        </div>
+        <div class="modal-footer">
+            <br>
+            <button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Actualizar<i class="material-icons right">send</i></button>
+        </div>
+    </div>
+</form><!-- Fin Modal Structure Editar Programa-->
+
+<!-- Modal Structure Eliminar Objetivo-->
+<form action="/gestionAdmin/gestionProgramas/objetivos/eliminar-objetivo" method="POST">
+    <div id="modalEliminarObj" class="modal">
+        <div class="modal-content">
+            <h4>Eliminar objetivo</h4>
+            <p>¿Está seguro de eliminar este objetivo?</p>
+            <input type="hidden" name="idNivel" value="<%=idNivel%>">
+            <div id="eliminarObjetivo"></div>
+        </div>
+        <div class="modal-footer">
+            <button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Eliminar<i class="material-icons right">delete</i></button>
+        </div>
+    </div>
+</form><!-- Fin Modal Structure Eliminar Objetivo-->
+<input type="hidden" id="nivelObjetivos" value="<%=idNivel%>">
+<input type="hidden" id="registroExitosoObj" value="<%=registro_exitoso%>">
+
+<%- include('include/footer.ejs') %>
+
+<script>
+    const buscarObjetivo = () => {
+    let data = {
+        criterio: document.getElementById('buscarObjetivo').value,
+        nivel: document.getElementById('nivelObjetivos').value
+    }
+    console.log(data)
+    fetch('/gestionAdmin/gestionProgramas/buscar-objetivo', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+            //'csrf-token': csrf
+        },
+        body: JSON.stringify(data)
+    }).then(result => {
+        return result.json(); //Regresa otra promesa
+    }).then(data => {
+      //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
+      //...
+      let html = '';
+      let i = 1;
+      for (let objetivo of data.objetivos){
+          if(objetivo.estatus === 1){
+            html += '<li class="collection-item">'+
+                   i + '.- ' + objetivo.descripcion +
+                    '<span class="badge">' +
+                        '<a class="waves-effect waves-light modal-trigger black-text" href="#EditarObjetivo" onclick="obtenerIdObj(' + objetivo.idObjetivo + ')"><i class="material-icons left">edit</i></a>'+
+                        '<a class="waves-effect waves-light modal-trigger black-text" href="#modalEliminarObj" onclick="eliminarObj(' + objetivo.idObjetivo + ')"><i class="material-icons left">delete</i></a>' +
+                    '</span>'+
+            '</li>';
+          } 
+        i++;
+      }
+      document.getElementById('lista-objetivos').innerHTML = html;
+      M.AutoInit();
+
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+
+    let registro_exitoso = document.getElementById('registroExitosoObj').value;
+
+    if (registro_exitoso !== 'false'){
+        M.toast({html: registro_exitoso ,  length:6500, classes: 'grey'})
+    }
+
+    const obtenerIdObj = (idObjetivo) => {
+        html = '<input type="hidden" name="idObjetivo" value="' + idObjetivo + '">'
+        document.getElementById('idObjetivo').innerHTML = html;
+        M.AutoInit();
+    }
+
+    const eliminarObj = (idObjetivo) => {
+        html = '<input type="hidden" name="idObjetivo" value="' + idObjetivo + '">'
+        document.getElementById('eliminarObjetivo').innerHTML = html;
+        M.AutoInit();
+    }
+
+</script>

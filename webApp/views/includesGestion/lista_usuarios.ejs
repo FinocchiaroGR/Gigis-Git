@@ -1,0 +1,22 @@
+<table class="highlight">
+    <thead>
+    <tr>
+        <th data-field="nombre">Nombre</th>
+        <th data-field="titulo">Rol</th>
+        <th data-field="editar"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <% for (let usuario of usuarios) { %>  
+        <tr>
+            <td  style="cursor: pointer;"><a href="<%= usuario.login%>-perfil" class = "black-text"><%= usuario.nombreUsuario %> <%= usuario.apellidoPaterno %></a></td>
+            <td><%= usuario.nombre %></td>
+                
+           
+            <td>
+            <a href="<%= usuario.login %>-editar" class = "black-text"><i class="material-icons left" style="cursor: pointer;">edit</i></a>
+            </td>
+        </tr>
+    <% } %>
+    </tbody>
+</table>

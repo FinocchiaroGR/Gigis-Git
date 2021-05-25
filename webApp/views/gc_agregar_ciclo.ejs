@@ -1,0 +1,163 @@
+<%- include('include/head.ejs') %>
+<%- include('include/titleBar.ejs') %>
+<%- include('include/sideNavBar.ejs') %>   
+
+<div class="row">
+    <br>
+    <div class="row">
+        <div class="input-field col s2 m1">
+            <p><strong>Fecha:</strong></p>
+        </div>
+        <div class="input-field col s4 m3">
+          <input type="text"  id="from" name="fechaInicial" class="datepickerInicial">
+          <label for="from">Elige la fecha de inicio</label>
+        </div>
+        <div class="input-field col s4 m3">
+          <input type="text" id="to" name="fechaFinal" class="datepickerFinal">
+          <label for="to">Elige la fecha de finalización</label>
+        </div>
+        <div class="col right">
+            <div class="input-field" id = "btnRegCiclo">
+               <a id="botonRegCiclo" class="btn-small grey accent-4 right tooltipped" data-tooltip="Selecciona al menos un programa y asigna al menos a un terapeuta para guardar el ciclo."><i class="material-icons left">save</i>Guardar</a>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col s12 m12">
+      <h4>Programas</h4>
+      <ul class="collapsible">
+        <% for (let programa of programas) { %>  
+            <li>
+                <div class="collapsible-header">
+                    <i id = "iconoExpand<%= programa.idPrograma %>" class="material-icons left grey-text text-lighten-2">expand_more</i>
+                    <%= programa.nombrePrograma %>
+                    <span class="badge">
+                        <label>
+                            <input name ="<%= programa.idPrograma %>" id="<%= programa.idPrograma %>" type="checkbox" onChange="mostrarOps(this)"/>
+                            <span></span>
+                        </label>
+                    </span>
+                    
+                </div>
+                <div class="collapsible-body">
+                    <div class="collection" id="<%= programa.idPrograma %>at" style = "display:none">
+                        <% for (let terapeuta of terapeutas) { %> 
+                            <a class="collection-item"><%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %> 
+                                <span class="badge">
+                                    <label>
+                                        <input name ="<%= programa.idPrograma %><%= terapeuta.login %>" id="<%= programa.idPrograma %><%= terapeuta.login %>" type="checkbox" onChange="selTe(this)"/>
+                                        <span></span>
+                                    </label>
+                                </span> 
+                            </a>
+                        <% } %>
+                    </div>
+                </div>
+            </li>
+        <% } %>  
+        </ul>       
+     </div> 
+  <input type="text" id="fechaLimite" value="<%= fechaLimite[0].fechaFinal %>" style="visibility:hidden;">
+</div>
+</div>  
+</div>
+</main>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="/js/materialize.js"></script>
+<script type="text/javascript" src="/js/materialize.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+<script type="text/javascript" src="/js/consultas.js"></script>
+<script type="text/javascript" src="/js/programas.js"></script>
+<script type="text/javascript" src="/js/gestion_usuarios.js"></script>
+<script type="text/javascript" src="/js/gestion_ciclos.js"></script>
+<script type="text/javascript" src="/js/gestion_programas.js"></script>
+</body>
+</html>
+
+<script>
+    // Registro de ciclos 
+    let prograsSel=[], terapAsig=[];
+    // Aparecer boton de asignar terapeutas
+    let countP=0, countT=0;
+    let btnDesactivado = '<a class="btn-small grey accent-4 right tooltipped" data-tooltip="Selecciona al menos un programa y asigna al menos a un terapeuta para guardar el ciclo."><i class="material-icons left">save</i>Guardar</a>';    
+    let btnActivado = '<a class="waves-effect waves-light btn-small light-green accent-4 right" onclick="enviarJSONs()"><i class="material-icons left">save</i>Guardar</a>';
+    const  mostrarOps=(elemento) => {
+       let isChecked = document.getElementById(elemento.id).checked;
+       let id2 = elemento.id + 'at';
+        if (isChecked){
+            countP+=1;
+            document.getElementById(id2).style.display = "block";
+            document.getElementById("iconoExpand"+elemento.id).className = "material-icons left black-text";
+            prograsSel.push(parseInt(elemento.id));
+            document.getElementById("btnRegCiclo").innerHTML  = countT !== 0 ? btnActivado: btnDesactivado;
+            M.AutoInit();
+        }else{
+            tsize = Object.keys(terapAsig).length;
+            let count = 0;
+            for(let t= 0; t < tsize; t++){
+                if(terapAsig[t-count][0].idPrograma === parseInt(elemento.id)){
+                    let loginv = terapAsig[t-count][0].login;
+                    document.getElementById(''+elemento.id+loginv).checked = false;
+                    terapAsig.splice(t-count, 1); 
+                    countT-=1;
+                    count+=1;
+                }
+            }
+            countP-=1;
+            document.getElementById(id2).style.display = "none";
+            document.getElementById("iconoExpand"+elemento.id).className = "material-icons left grey-text text-lighten-2";
+            let pos = listaProg.indexOf(elemento.id);
+            prograsSel.splice(pos, 1);
+            document.getElementById("btnRegCiclo").innerHTML  = countP === 0 ? btnDesactivado: countT === 0 ? btnDesactivado: btnActivado;
+            M.AutoInit();
+
+        }
+    
+    }
+    const selTe=(terapeuta) => {
+        isChecked = document.getElementById(terapeuta.id).checked;
+        let idP = parseInt(terapeuta.id);
+        let aux = [ {login: terapeuta.id.split(idP)[1], idPrograma: idP},];
+        if (isChecked){
+            countT+=1;
+            terapAsig.push(aux);
+            document.getElementById("btnRegCiclo").innerHTML = btnActivado;
+            M.AutoInit();
+        }else{
+            countT-=1;
+            let pos = terapAsig.indexOf( idP);
+            terapAsig.splice(pos, 1);
+            document.getElementById("btnRegCiclo").innerHTML  = countT === 0 ? btnDesactivado: countP === 0 ? btnDesactivado: btnActivado;
+            M.AutoInit();
+    }
+
+    }
+
+    const enviarJSONs = () => {
+        let fechaInicial =  document.getElementById("from").value;
+        let fechaFinal = document.getElementById("to").value;
+        let data = {
+            prograsSel : prograsSel,
+            terapAsig: terapAsig,
+            fechaInicial: fechaInicial,
+            fechaFinal: fechaFinal
+        };
+
+        fetch('/gestionAdmin/gestionCiclos/agregar-ciclo',{
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body:JSON.stringify(data)
+        }).then(result => {
+          return result.json();
+        }).then(data => {
+            console.log(data.ciclo.idCiclo);
+            let liga = "/gestionAdmin/gestionCiclos/inscribir/"+data.ciclo.idCiclo;
+            window.location= liga;
+        });
+
+        
+    }
+</script>

@@ -1,0 +1,269 @@
+<%- include('include/head.ejs') %>
+<%- include('include/titleBar.ejs') %>
+<%- include('include/sideNavBar.ejs') %> 
+
+<div class="row">
+  <div id= "contenido">
+    <br><h5><strong>Programas disponibles</strong></h5><br>
+    <ul class="collapsible" id="lista-programas"> 
+      <% for (let programa of programas) { %>  
+          <li>
+              <div class="collapsible-header">
+                  <%= programa.nombrePrograma %>
+                  <span class="badge">
+                      <!-- Modal Editar -->
+                      <i class="material-icons left">more_vert</i>
+                  </span>
+              </div>
+              <div class="collapsible-body">
+                  <div class="collection">
+                      <% for (let terapeuta of terapeutas) { %>
+                        <% if (terapeuta.idPrograma === programa.idPrograma) {%> 
+                          <a class="collection-item" onclick="listaParticipantes('<%= terapeuta.nombreUsuario %>', '<%= terapeuta.apellidoPaterno %>','<%= programa.nombrePrograma %>','<%=terapeuta.idGrupo%>')" style="cursor: pointer;">Asignar participantes a <%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %></a> 
+                        <% } %>
+                      <% } %>
+                  </div>
+              </div>
+          </li>
+      <% } %>
+    </ul>
+    <a  href= "/gestionAdmin/gestionCiclos" class="modal-action waves-effect btn-flat grey lighten-1 boton-md right">Finalizar inscripción</a>
+  </div>
+</div>
+
+  <input type="hidden" id="error" value="<%= error %>">
+  <input type="hidden" id="bandera" value="<%= bandera %>">    
+<%- include('include/footer.ejs') %>
+
+<script>
+  let error = document.getElementById('error').value;
+  let bandera = document.getElementById('bandera').value;
+  if (error !== 'false' && bandera == 'true'){
+    window.location="/gestionAdmin/gestionCiclos/";
+  }
+  if (error === 'false' && bandera == 'true'){
+    
+    M.toast({html: 'El ciclo fue registrado correctamente.',  length:6500, classes: 'grey'})
+  }
+
+  const listaParticipantes = (nombre, apellido, programa, idGrupo) => {
+    fetch('/gestionAdmin/gestionCiclos/participantes/'+idGrupo, {
+        method: 'GET'
+    }).then(result => {
+        return result.json(); //Regresa otra promesa
+    }).then(data => {
+        //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
+        console.log("Respuesta de la petición asíncrona");
+        console.log(data);
+        let html = '<br><h5><strong>'+programa+'</strong> con '+nombre+' ' +apellido+'</h5>'+
+        '<div class="row">'+
+          '<div class="col s12 m6 l6 ">'+
+            '<table id = "tablita">'+
+              '<thead>'+
+                '<tr>'+
+                  '<div class="input-field col m11">'+
+                      '<i class="material-icons prefix">search</i>'+
+                      '<input id="buscarP" type="text" class="validate" oninput="buscar(&apos;'+idGrupo+'&apos;)">'+
+                  '</div>'+
+                '</tr>'+
+              '</thead>'+
+              '<tbody id = "tablita">';
+              let colorPalomita = 'grey-text text-lighten-3';
+              for (let participante of data.participantes) {
+                let apellidoP =  participante.apellidoPaterno === 'null '? '&nbsp;':  participante.apellidoPaterno === 'null'? '&nbsp;': participante.apellidoPaterno;
+                let apellidoM =  participante.apellidoMaterno === 'null '? '&nbsp;': participante.apellidoMaterno === 'null'? '&nbsp;': participante.apellidoMaterno;
+                for (let inscrito of data.inscritos){
+                  if(inscrito.login === participante.login){
+                    colorPalomita = 'light-green-text text-accent-4';
+                  }
+                }
+                html += '<tr>'+
+                    '<td><i class="material-icons left '+colorPalomita+'" >check</i>' + participante.nombreUsuario+' ' +apellidoP+' ' + apellidoM+' ' + '</td>'+
+                    '<td>'+
+                      '<a  onclick="registroObjetivos(&apos;'+participante.login+'&apos;,&apos;'+idGrupo+'&apos;)" style="cursor: pointer;">'+
+                        '<i class="material-icons left">chevron_right</i>'+
+                      '</a>'+
+                    '</td>'+
+                  '<tr>';
+                colorPalomita = 'grey-text text-lighten-3';
+              }
+        html +=   '</tbody>'+
+                    '</table>'+
+                    '<br><br>'+
+                  '</div>'+
+                  '<div class="col s12 m6 l6">'+
+                    '<div class="asignar-nivel" id="niveles-participante-'+idGrupo+'">'+
+                    '</div>'+
+                  '</div>'+
+                '</div>';        
+        document.getElementById('contenido').innerHTML = html;
+        M.AutoInit();
+    }).catch(err => {
+        console.log(err);
+    });
+};
+
+const buscar = (idGrupo) => {
+    let criterio = document.getElementById("buscarP").value;
+    console.log(criterio);
+    fetch('/gestionAdmin/gestionCiclos/buscar/'+criterio, {
+        method: 'GET'
+    }).then(result => {
+        return result.json(); //Regresa otra promesa
+    }).then(data => {
+        //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
+        console.log("Respuesta de la petición asíncrona");
+        let html = '<tbody id = "tablita">';
+        let colorPalomita = 'grey-text text-lighten-3';
+        for (p of data.participante) {
+          let apellidoP =  p.apellidoPaterno === 'null '? '&nbsp;':  p.apellidoPaterno === 'null'? '&nbsp;': p.apellidoPaterno;
+          let apellidoM =  p.apellidoMaterno === 'null '? '&nbsp;': p.apellidoMaterno === 'null'? '&nbsp;': p.apellidoMaterno;
+          for (let inscrito of data.inscritos){
+            if(inscrito.login === p.login){
+              colorPalomita = 'light-green-text text-accent-4';
+            }
+          }
+          html += '<tr>'+
+              '<td><i class="material-icons left '+colorPalomita+'" >check</i>' +p.nombreUsuario+' ' + apellidoP+' ' + apellidoM+' ' + '</td>'+
+              '<td>'+
+                '<a  onclick="registroObjetivos(&apos;'+p.login+'&apos;,&apos;'+idGrupo+'&apos;)" style="cursor: pointer;">'+
+                  '<i class="material-icons left">chevron_right</i>'+
+                '</a>'+
+              '</td>'+
+            '<tr>';
+          colorPalomita = 'grey-text text-lighten-3';
+        }
+        '</tbody>';     
+        document.getElementById('tablita').innerHTML = html;
+        M.AutoInit();
+
+    }).catch(err => {
+        console.log(err);
+    });
+};
+
+const registroObjetivos = (login, idGrupo) => {
+  let data = {
+    idGrupo: idGrupo,
+    login: login
+  };
+  console.log(data);
+  //función que manda la petición asíncrona
+  fetch('/gestionAdmin/gestionCiclos/select-nivel', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+          //'csrf-token': csrf
+      },
+      body: JSON.stringify(data)
+  }).then(result => {
+      return result.json(); //Regresa otra promesa
+  }).then(data => {
+    //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
+    //...
+    console.log(data)
+    let html = '';
+    //Header 
+    html = '<div class="row">' +
+            '<h6>Inscribir a: ' + data.usuarios[0].nombreUsuario +' '+data.usuarios[0].apellidoPaterno + ' ' + data.usuarios[0].apellidoMaterno  + '</h6>';
+    //Registro nivel
+    
+      html +=   
+                  '<div >' +
+                    '<p class="grey-text text-darken-4" ><strong>Selecciona el nivel del participante.</strong></p>' +
+                  '</div>' +  
+                  '<div class="input-field ">'+
+                    '<select id = "nivelAsig-' + login+'" >'+
+                      '<option value="" disabled selected> - </option>';
+                      
+                      for(nivel of data.niveles){
+                        html += '<option value="' + nivel.idNivel + '"> ' + nivel.nombreNivel + '</option>';
+                      }
+      html +=       '</select>' +
+                  '</div>' +  
+                  '<div class="asignar-ojetivos" id="objetivos-participante-grupo-'+idGrupo+'">'+
+                  '</div>'+
+                '</div>';                
+                
+    let id = 'niveles-participante-' + idGrupo;
+    document.getElementById(id).innerHTML = html;
+    M.AutoInit();
+    let idselect = 'nivelAsig-' + login;
+    if (Object.keys(data.inscritos).length != 0){
+      selectNivel = document.getElementById(idselect);
+      selectNivel.options[data.inscritos[0].idNivel-data.niveles[0].idNivel].selected=true;
+    }
+    M.AutoInit();
+
+    document.getElementById(idselect).onchange = () => {
+        let idNivelObj = document.getElementById(idselect).value;
+        console.log(idNivelObj);
+        let data2 = {idNivelObj: idNivelObj};
+
+        console.log(data2);
+        //función que manda la petición asíncrona
+        fetch('/gestionAdmin/gestionCiclos/mostrar-obj', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+                //'csrf-token': csrf
+            },
+            body: JSON.stringify(data2)
+        }).then(result => {
+            return result.json(); //Regresa otra promesa
+        }).then(data2 => {
+          //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
+          //...
+          console.log(data2)
+          let html2 = '';
+          //Header 
+          html2 += 
+                      '<div>'+
+                        '<br><p class="grey-text text-darken-4" ><strong>Selecciona los objetivos para asignar al participante.</strong></p>'+
+                      '</div>'+
+                      '<table class="highlight">'+
+                        '<tbody>'+
+                          '<tr>'+
+                            '<td class = " light-blue-text text-darken-4">Seleeccionar todos los objetivos.</td>'+
+                            '<td>'+
+                              '<label>'+
+                                '<input name ="selTodos" id="selTodos" type="checkbox" />'+ 
+                                '<span>.</span>'+
+                              '</label>'+  
+                            '</td>'+
+                          '</tr>'; 
+                        for (let obj of data2.objetivos){ 
+                            html2+= '<tr>'+
+                              '<td>'+ obj.descripcion + '</td>'+
+                              '<td>'+
+                                '<label>'+
+                                  '<input name ="' +obj.idObjetivo + '" id="' +obj.idObjetivo + '" type="checkbox" />'+ 
+                                  '<span>.</span>'+
+                                '</label>'+  
+                              '</td>'+
+                            '</tr>';
+                        }
+                html2 += '</tbody> '+ 
+                        '</table>'+
+                        '<br>'+
+                        '<button class="modal-action waves-effect btn-flat grey lighten-1 right">Inscribir</button>';            
+                
+          let id2 = "objetivos-participante-grupo-"+idGrupo;
+          document.getElementById(id2).innerHTML = html2;
+          M.AutoInit();
+          
+          
+        }).catch(err => {
+          console.log(err);
+        });
+      }
+    
+  }).catch(err => {
+    console.log(err);
+  });
+  }
+
+
+
+
+</script>

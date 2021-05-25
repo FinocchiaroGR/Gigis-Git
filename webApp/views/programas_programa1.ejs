@@ -1,0 +1,192 @@
+<%- include('include/head.ejs') %> 
+<%- include('include/titleBar.ejs') %> 
+<%-include('include/sideNavBar.ejs') %> 
+
+<% let loginParticipante = ''; %>
+<% while (grupos) {
+  let headParticipantes = participantes; %>
+  <div class="row">
+    <div class="col s12 m6 ">
+      <h5>Terapeuta: <%= grupos.data.nombreUsuario%> <%= grupos.data.apellidoPaterno%></h5>
+    </div>
+    <div class="col s12 m6">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col s12 m6 l6 ">
+      <table >
+        <thead>
+          <tr>
+            <th>Participantes</th>
+            <th>Nivel</th>
+            <th>Calificaciones</th>
+          </tr>
+        </thead>
+        </tbody>
+        <% while (participantes) { 
+          let headCalificaciones = calificaciones;%>
+          <% if (participantes.data.login !== loginParticipante && participantes.data.idGrupo === grupos.data.idGrupo) { %>
+            <tr>
+              <td>
+                <a  onclick="registroPuntajes(<%=grupos.data.idGrupo%>,'<%=participantes.data.login%>')" href="#rPuntaje-<%=participantes.data.login%>">
+                  <%=participantes.data.nombreUsuario%>  <%=participantes.data.apellidoPaterno%>    <%=participantes.data.apellidoMaterno%>  
+                </a>
+              </td>
+              <td>  <%=participantes.data.nombreNivel%>  </td>
+              <td>
+                <% while (calificaciones) { %>
+                  <% if (calificaciones.data.login === participantes.data.login) { %>
+                    <%= Math.round(calificaciones.data.calificaciones * 100)/100 %>
+                  <% } %>
+                  <% calificaciones = calificaciones.next; %>
+                <% } %>
+              </td>
+              <% loginParticipante = participantes.data.login;%>
+            <% } %>
+            <% participantes = participantes.next; 
+               calificaciones = headCalificaciones;%>
+          <% } %>
+        </tbody>
+      </table>
+      <br /><br />
+    </div>
+    <div class="col s12 m6 l6 asignar-puntaje">
+      <div id="objetivos-participante-grupo-<%=grupos.data.idGrupo%>">
+      </div>
+    </div>
+  </div>
+  <% grupos = grupos.next; 
+     participantes = headParticipantes; %>
+<% } %>
+  
+<input type="hidden" id="idPrograma" value="<%=programa%>">
+ 
+<script>
+  const registroPuntajes = (idGrupo, login) => {
+
+    let data = {
+      grupo_id: idGrupo,
+      login_participante: login
+    };
+    //función que manda la petición asíncrona
+    fetch('/programas/objetivos-participante', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+            //'csrf-token': csrf
+        },
+        body: JSON.stringify(data)
+    }).then(result => {
+        return result.json(); //Regresa otra promesa
+    }).then(data => {
+      let html = '';
+      let numeroObj = 1;
+      //Header puntajes
+      html ='<h6>Asignar puntajes a: ' + data.objetivos[0].nombreUsuario + ' ' + data.objetivos[0].apellidoPaterno + '</h6>' +
+              '<div class="row">' +
+                '<div class="col s6">' +
+                  '<p><strong>Objetivos</strong></p>' +
+                '</div>' +
+                '<div class="col s3">' +
+                  '<p><strong>Puntaje inicial</strong></p>' +
+                '</div>' +
+                '<div class="col s3">' +
+                  '<p><strong>Puntaje final</strong></p>' +
+                '</div>' +
+              '</div>';
+      //Registro objetivos y puntajes 
+      for(objetivo of data.objetivos){
+        html +=   '<div class="row">' +
+                    '<div class="col s6">' +
+                      '<p>' + objetivo.descripcion + '</p>' +
+                    '</div>' +  
+                    '<div class="col s3">' +
+                      '<select id = "puntajeInicial-' + numeroObj + '">';
+          
+          //Asignacion de opciones para calificar puntaje inicial
+          if (objetivo.puntajeInicial === null || objetivo.puntajeInicial === 0  )             
+            html +=     '<option value="" disabled selected> - </option>'
+          else 
+            html +=     '<option value="' + objetivo.puntajeInicial + '" disabled selected> ' + objetivo.puntajeInicial + '</option>'
+          for(let puntaje = 1; puntaje <= objetivo.puntajeMaximo; puntaje++){
+              html +=   '<option value="' + puntaje + '"> ' + puntaje + '</option>';
+          }
+          html +=     '</select>' +
+                    '</div>'+
+                    '<div class="col s3">' +
+                      '<select id = "puntajeFinal-' + numeroObj + '">';
+
+          //Asignacion de opciones para calificar puntaje final 
+          if (objetivo.puntajeFinal === null || objetivo.puntajeFinal === 0  )             
+            html +=     '<option value="" disabled selected> - </option>'
+          else 
+            html +=     '<option value="' + objetivo.puntajeFinal + '" disabled selected> ' + objetivo.puntajeFinal + '</option>'
+          for(let puntaje = 1; puntaje <= objetivo.puntajeMaximo; puntaje++){
+              html +=   '<option value="' + puntaje + '"> ' + puntaje + '</option>';
+          }
+          html +=     '</select>' +
+                    '</div>'+ 
+                  '</div>';
+          numeroObj++;
+      }
+      html +=     '<div class="row right">' +
+                    '<button class="btn-formulario btn waves-effect blue lighten-1" id="guardarPuntajes">Guardar' +
+                      '<i class="material-icons right">send</i>' +
+                    '</button>' +
+                    '<input type="hidden" value="' + data.programa[0].idPrograma + '" id="idPrograma">'
+                  '</div>';
+                  
+      let id = 'objetivos-participante-grupo-' + data.objetivos[0].idGrupo;
+
+      document.getElementById(id).innerHTML = html;
+      M.AutoInit();
+
+      document.getElementById("guardarPuntajes").onclick = () => {
+        const objetivos = [];
+        numeroObj = 1;
+        function PGO(login, idGrupo, idObjetivo, pInicial, pFinal){
+          this.login = login;
+          this.idGrupo = idGrupo;
+          this.idObjetivo = idObjetivo;
+          this.pInicial = pInicial;
+          this.pFinal = pFinal;
+        }
+        for(objetivo of data.objetivos){
+          const idInicio = 'puntajeInicial-' + numeroObj;
+          const idFinal = 'puntajeFinal-' + numeroObj;
+          const puntajeInicial = document.getElementById(idInicio).value;
+          const puntajeFinal = document.getElementById(idFinal).value;
+          const participante = new PGO(data.participante, data.grupo, objetivo.idObjetivo, puntajeInicial, puntajeFinal );
+          objetivos.push(participante); 
+          numeroObj++;
+        }
+        let obj = {
+          programa: document.getElementById('idPrograma').value,
+          objetivos: objetivos
+        } 
+        fetch('/programas/registro-puntajes',{
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+              //'csrf-token': csrf
+          },
+          body: JSON.stringify(obj)
+        }).then(result => {
+          return result.json();
+        }).then (objetivos => {
+          let html = '';
+          let mensaje = 'Se actualizaron los puntajes de ' + objetivos.nombre[0].nombreUsuario + ' ' + objetivos.nombre[0].apellidoPaterno;
+          let id = 'objetivos-participante-grupo-' + objetivos.grupo; 
+          document.getElementById(id).innerHTML = html;
+          M.toast({html: mensaje}) 
+        }).catch(err => {
+            console.log(err);
+          });
+      }
+    }).catch(err => {
+      console.log(err);
+    });
+  };
+
+</script>
+<%- include('include/footer.ejs') %>
