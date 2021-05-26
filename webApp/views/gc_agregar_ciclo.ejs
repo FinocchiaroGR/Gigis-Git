@@ -59,7 +59,7 @@
         <% } %>  
         </ul>       
      </div>
-     <% if (fechaLimite[0].fechaFinal === undefined){ %>
+     <% if (fechaLimite.length === 0){ %>
          <input type="text" id="fechaLimite" value="0" style="visibility:hidden;">
      <% } else { %>
         <input type="text" id="fechaLimite" value="<%= fechaLimite[0].fechaFinal %>" style="visibility:hidden;">
