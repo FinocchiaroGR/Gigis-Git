@@ -5,7 +5,7 @@ const pool = mysql.createPool({
     // user : 'doadmin',
     // password : 'lnlosq5d7ulifaug',
     user : 'Test1',
-    password: 'password',
+    password: 'Test@password321',
     host : 'localhost',
     // host : 'gigisplayhousebd-do-user-9229702-0.b.db.ondigitalocean.com',
     // port : '25060',
