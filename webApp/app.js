@@ -11,7 +11,7 @@ const nombreUMiddleWare = require('./util/nombreUsuario.js');
 const csrf = require('csurf');
 const csrfProtection = csrf();
 
-const secret = require('./util/secret');
+const secret = require('./util/secret.js');
 
 //EJS
 app.set('view engine', 'ejs');
