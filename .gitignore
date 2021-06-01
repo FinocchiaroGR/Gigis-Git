@@ -7,7 +7,8 @@
 node_modules/
 dist/
 uploads/ 
-# secret.js
+secret.js
+passwordBD.js
 
 # Compiled Java class files
 *.class
