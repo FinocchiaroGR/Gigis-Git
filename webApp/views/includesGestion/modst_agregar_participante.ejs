@@ -1,4 +1,5 @@
 <form action="/gestionAdmin/gestionParticipantes" method="POST">
+    <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
     <div class="modal-content">
         <h3>Nuevo participante</h3>
         <label> * Campos obligatorios.</label>
@@ -37,7 +38,7 @@
                     <input id="correo" name="correo" type="text" class="validate"  placeholder="Correo o usuario"  required>
                 </div>
             </li>
-            <li><strong><br>Contraseña * </strong></li>
+            <li><strong><br>Contraseña</strong></li>
             <li>
                 <div class="input-field">
                     <input   type="text" class="black-text"  value="asdfg1234" disabled>
@@ -46,14 +47,14 @@
             <li><strong><br>Fecha de nacimiento *</strong></li>
             <li>
                 <div class="input-field " requiered>
-                  <input type="text" id="fechaN" name="fechaN" class="datepickerP " required> 
+                  <input type="text" id="fechaN" name="fechaN" class="datepickerP" required> 
                   <label for="fechaN">Elige la fecha de nacimiento</label> 
                 </div>
             </li>
             <li"><strong><br>Teléfono del responsable</strong></li>
             <li>
                 <div class="input-field ">
-                    <input id="tel" name = "tel" type="text" class="validate" placeholder="Número telefónico">
+                    <input id="tel" name = "tel" type="text" class="validate" placeholder="Número telefónico" minlength="10" maxlength="10">
                 </div>
             </li>
         </ul>

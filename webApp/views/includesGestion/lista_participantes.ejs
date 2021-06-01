@@ -6,10 +6,10 @@
         <th data-field="editar"></th>
     </tr>
     </thead>
-    <tbody>
+    <tbody id="tablaParticipantes">
     <% for (let participante of participantes) { %>  
         <tr>
-            <td  style="cursor: pointer;"><a href="<%= participante.ruta %>" class = "black-text"><%= participante.nombreUsuario %></a></td>
+            <td  style="cursor: pointer;"><a href="./perfil/<%= participante.login %>" class = "black-text"><%= participante.nombreUsuario %></a></td>
             <% if (participante.estatus === 'A')  { %>  
                 <td>Activo</td>
             <% }else if(participante.estatus === 'I'){ %>  
@@ -18,9 +18,16 @@
                 <td>Baja permanente</td>
             <% } %>
             <td>
-            <a href="<%= participante.login %>-editar" class = "black-text"><i class="material-icons left" style="cursor: pointer;">edit</i></a>
+            <% if (permisos.includes(6)) { %>
+                <a class=" modal-trigger black-text white right" href="#modificarParticipante" id="<%= participante.login %>" onclick="modPar(this.id);"><i class="material-icons">create</i></a>
+            <% } %>
             </td>
         </tr>
     <% } %>
+    <!-- Modal Structure Modificar Participante-->
+    <div id="modificarParticipante" class="modal">
+        <div id="despliega_participante"><div id="childDiv"></div></div>
+    </div><!-- Fin Modal Structure Modificar Participante -->
+
     </tbody>
 </table>

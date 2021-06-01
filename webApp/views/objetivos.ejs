@@ -7,7 +7,7 @@
         <div class="row">
             <div class="input-field col s12" >
             <i class="material-icons prefix">search</i>
-            <input type="text" id="buscarObjetivo" class="autocomplete" oninput="buscarObjetivo()">
+            <input type="text" id="buscarObjetivo" class="autocomplete" oninput="buscarObjetivo('<%= permisos %>')">
             <label for="buscarObjetivo">Objetivo</label>
             </div>
         </div>
@@ -15,13 +15,16 @@
     <div class="col">
         <div class="row">
           <div class="input-field col s12">
-            <!-- Modal Agregar -->
-             <a class="waves-effect waves-light btn-small modal-trigger light-green accent-4" href="#agregarObjetivo"><i class="material-icons left">add_circle</i>Agregar</a>
+            <!-- Boton Agregar -->
+            <% if (permisos.includes(18)) { %>
+               <a class=" btn-small modal-trigger light-green accent-4" href="#agregarObjetivo"><i class="material-icons left">add_circle</i>Agregar</a>
+            <% } %>
           </div>
         </div>
     </div>
     <!-- Inicia Modal Structure agregar objetivo-->
     <form action="/gestionAdmin/gestionProgramas/objetivos/agregar-objetivo" method="POST">
+        <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >
         <div id="agregarObjetivo" class="modal">
             <div class="modal-content">
                 <h3>Nuevo objetivo</h3>
@@ -29,7 +32,7 @@
             <ul>
                 <li><strong><br>Descripción *</strong></li>
                 <li>
-                <div class="input">
+                <div class="input-field">
                     <input name="descripcion" type="text" class="validate"  placeholder="Descripción" required>
                 </div>
                 </li>
@@ -37,7 +40,7 @@
         </div>
         <div class="modal-footer">
             <br>
-            <button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Agregar<i class="material-icons right">send</i></button>
+            <button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Agregar</button>
         </div>
         </div><!--Fin Modal Structure agregar programa-->
     </form>
@@ -47,14 +50,18 @@
     <li class="collection-header"><h4>Objetivos</h4></li>
     <% let i = 1; %>
     <% for (objetivo of objetivos) { %>  
-        <% if (objetivo.estatus === 1) { %>
+        <% if (objetivo.status === 1) { %>
             <li class="collection-item">
                 <%= i%>.- <%= objetivo.descripcion %>
                 <span class="badge">
-                    <!-- Modal Editar -->
-                    <a class="waves-effect waves-light modal-trigger black-text" href="#EditarObjetivo" onclick="obtenerIdObj(<%=objetivo.idObjetivo%>)"><i class="material-icons left">edit</i></a>
-                    <!-- Modal Eliminar -->
-                    <a class="waves-effect waves-light modal-trigger black-text" href="#modalEliminarObj" onclick="eliminarObj(<%=objetivo.idObjetivo%>)"><i class="material-icons left">delete</i></a>
+                    <!-- Boton Editar -->
+                    <% if (permisos.includes(16)) { %>
+                        <a class="waves-effect waves-light modal-trigger black-text" href="#EditarObjetivo" onclick="obtenerIdObj(<%=objetivo.idObjetivo%>)"><i class="material-icons left">edit</i></a>
+                    <% } %>
+                    <!-- Boton Eliminar -->
+                    <% if (permisos.includes(19)) { %>
+                        <a class="waves-effect waves-light modal-trigger black-text" href="#modalEliminarObj" onclick="eliminarObj(<%=objetivo.idObjetivo%>)"><i class="material-icons left">delete</i></a>
+                    <% } %>
                 </span>
             </li>
             <% i++; %>
@@ -64,6 +71,7 @@
 
 <!-- Modal Structure Editar Objetivo-->
 <form action="/gestionAdmin/gestionProgramas/objetivos/editar-objetivo" method="POST">
+    <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >  
     <div id="EditarObjetivo" class="modal">
         <div class="modal-content">
             <h3>Editar objetivo</h3>
@@ -81,13 +89,15 @@
         </div>
         <div class="modal-footer">
             <br>
-            <button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Actualizar<i class="material-icons right">send</i></button>
+            <button  type = "submit" class="modal-action waves-effect btn-flat grey lighten-1 boton-md">Actualizar</button>
+            <label style="visibility:hidden">**</label>
         </div>
     </div>
 </form><!-- Fin Modal Structure Editar Programa-->
 
 <!-- Modal Structure Eliminar Objetivo-->
 <form action="/gestionAdmin/gestionProgramas/objetivos/eliminar-objetivo" method="POST">
+    <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" >  
     <div id="modalEliminarObj" class="modal">
         <div class="modal-content">
             <h4>Eliminar objetivo</h4>
@@ -106,17 +116,17 @@
 <%- include('include/footer.ejs') %>
 
 <script>
-    const buscarObjetivo = () => {
+    const csrf = document.getElementById('_csrf').value;
+    const buscarObjetivo = (permisos) => {
     let data = {
         criterio: document.getElementById('buscarObjetivo').value,
         nivel: document.getElementById('nivelObjetivos').value
     }
-    console.log(data)
     fetch('/gestionAdmin/gestionProgramas/buscar-objetivo', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
-            //'csrf-token': csrf
+            'Content-Type': 'application/json',
+            'csrf-token': csrf
         },
         body: JSON.stringify(data)
     }).then(result => {
@@ -127,13 +137,17 @@
       let html = '';
       let i = 1;
       for (let objetivo of data.objetivos){
-          if(objetivo.estatus === 1){
+          if(objetivo.status === 1){
             html += '<li class="collection-item">'+
                    i + '.- ' + objetivo.descripcion +
-                    '<span class="badge">' +
-                        '<a class="waves-effect waves-light modal-trigger black-text" href="#EditarObjetivo" onclick="obtenerIdObj(' + objetivo.idObjetivo + ')"><i class="material-icons left">edit</i></a>'+
-                        '<a class="waves-effect waves-light modal-trigger black-text" href="#modalEliminarObj" onclick="eliminarObj(' + objetivo.idObjetivo + ')"><i class="material-icons left">delete</i></a>' +
-                    '</span>'+
+                    '<span class="badge">';
+                        if (permisos.includes(16)) {
+                            html += '<a class="waves-effect waves-light modal-trigger black-text" href="#EditarObjetivo" onclick="obtenerIdObj(' + objetivo.idObjetivo + ')"><i class="material-icons left">edit</i></a>';
+                        }
+                        if (permisos.includes(19)) {
+                           html += '<a class="waves-effect waves-light modal-trigger black-text" href="#modalEliminarObj" onclick="eliminarObj(' + objetivo.idObjetivo + ')"><i class="material-icons left">delete</i></a>';
+                        }
+                    html += '</span>'+
             '</li>';
           } 
         i++;

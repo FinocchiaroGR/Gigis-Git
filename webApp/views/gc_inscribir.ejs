@@ -5,10 +5,19 @@
 <div class="row">
   <div id= "contenido">
     <div class = "row">
-      <div class = "col s12 m10 l6">
-      </div>
-      <div class = "col s12 m2 l6">
-        <br><br><a  href= "/gestionAdmin/gestionCiclos" class="waves-effect waves-light btn-small light-green accent-4 right">Finalizar inscripción</a>
+      <div class = "right">
+        <br><br>
+        <% if (permisos.includes(11) && idlastciclop==idciclo ) { %>
+        <!-- Boton Modificar ciclo -->
+        <a  onclick="modificarCiclo()"  class="waves-light btn-small light-green accent-4"><i class="material-icons left">edit</i>Editar ciclo</a>
+        <% } %>
+        <a  href= "/gestionAdmin/gestionCiclos" class="waves-effect waves-light btn-small light-green accent-4"><i class="material-icons left">done_all</i>Finalizar inscripción</a>
+        <!-- Modal Modificar ciclo-->
+        <div id="modificarCiclo" class="modal">
+          <div id="modalModCiclo">
+
+          </div>
+        </div><!-- Modificar ciclo-->
       </div>
     </div>
     <p><strong>Programas disponibles</strong></p>
@@ -19,344 +28,31 @@
                   <%= programa.nombrePrograma %>
                   <span class="badge">
                       <!-- Modal Editar -->
-                      <i class="material-icons left">more_vert</i>
+                      <i class="material-icons left">expand_more</i>
                   </span>
               </div>
-              <div class="collapsible-body">
-                  <div class="collection">
-                      <% for (let terapeuta of terapeutas) { %>
-                        <% if (terapeuta.idPrograma === programa.idPrograma) {%> 
-                          <a class="collection-item" onclick="listaParticipantes('<%= terapeuta.nombreUsuario %>', '<%= terapeuta.apellidoPaterno %>','<%= programa.nombrePrograma %>','<%=terapeuta.idGrupo%>')" style="cursor: pointer;">Asignar participantes a <%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %></a> 
+              <% if (permisos.includes(3)||permisos.includes(21)) { %>
+                <div class="collapsible-body">
+                    <div class="collection">
+                        <% for (let terapeuta of terapeutas) { %>
+                          <% if (terapeuta.idPrograma === programa.idPrograma && ((permisos.includes(21) && usuario === terapeuta.login) || permisos.includes(3))) {%> 
+                            <a class="collection-item" onclick="listaParticipantes('<%= terapeuta.nombreUsuario %>', '<%= terapeuta.apellidoPaterno %>','<%= programa.nombrePrograma %>','<%=terapeuta.idGrupo%>')" style="cursor: pointer;">Asignar participantes a <%= terapeuta.nombreUsuario %> <%= terapeuta.apellidoPaterno %></a> 
+                          <% } %>
                         <% } %>
-                      <% } %>
-                  </div>
-              </div>
+                    </div>
+                </div>
+              <% }%>
           </li>
       <% } %>
     </ul>
   </div>
 </div>
 
+  <a  href= "#modificarCiclo" class = "modal-trigger" id="modCiclo" type="hidden"></a>
   <input type="hidden" id="error" value="<%= error %>">
-  <input type="hidden" id="bandera" value="<%= bandera %>">    
+  <input type="hidden" id="bandera" value="<%= bandera %>"> 
+  <input type="hidden" id="idciclo" value="<%= idciclo %>">
+  <input type="hidden" id="_csrf" name="_csrf" value="<%= csrfToken %>" > 
+
+     
 <%- include('include/footer.ejs') %>
-
-<script>
-  let error = document.getElementById('error').value;
-  let bandera = document.getElementById('bandera').value;
-  if (error !== 'false' && bandera == 'true'){
-    window.location="/gestionAdmin/gestionCiclos/";
-  }
-  if (error === 'false' && bandera == 'true'){
-    
-    M.toast({html: 'El ciclo fue registrado correctamente.',  length:6500, classes: 'grey'})
-  }
-
-  const listaParticipantes = (nombre, apellido, programa, idGrupo) => {
-    fetch('/gestionAdmin/gestionCiclos/participantes/'+idGrupo, {
-        method: 'GET'
-    }).then(result => {
-        return result.json(); //Regresa otra promesa
-    }).then(data => {
-        //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
-        let html = '<br><h5><strong>'+programa+'</strong> con '+nombre+' ' +apellido+'</h5>'+
-        '<div class="row">'+
-          '<div class="col s12 m6 l6 ">'+
-            '<table id = "tablita">'+
-              '<thead>'+
-                '<tr>'+
-                  '<div class="input-field col m11">'+
-                      '<i class="material-icons prefix">search</i>'+
-                      '<input id="buscarP" type="text" class="validate" oninput="buscar(&apos;'+idGrupo+'&apos;)">'+
-                  '</div>'+
-                '</tr>'+
-              '</thead>'+
-              '<tbody id = "tablita">';
-              let colorPalomita = 'grey-text text-lighten-3';
-              for (let participante of data.participantes) {
-                let apellidoP =  participante.apellidoPaterno === 'null '? '&nbsp;':  participante.apellidoPaterno === 'null'? '&nbsp;': participante.apellidoPaterno;
-                let apellidoM =  participante.apellidoMaterno === 'null '? '&nbsp;': participante.apellidoMaterno === 'null'? '&nbsp;': participante.apellidoMaterno;
-                for (let inscrito of data.inscritos){
-                  if(inscrito.login === participante.login){
-                    colorPalomita = 'light-green-text text-accent-4';
-                  }
-                }
-                html += '<tr>'+
-                    '<td><i class="material-icons left '+colorPalomita+'" id = "paloma-'+participante.login+'" >check</i>' + participante.nombreUsuario+' ' +apellidoP+' ' + apellidoM+' ' + '</td>'+
-                    '<td>'+
-                      '<a  onclick="registroObjetivos(&apos;'+participante.login+'&apos;,&apos;'+idGrupo+'&apos;)" style="cursor: pointer;">'+
-                        '<i class="material-icons left">chevron_right</i>'+
-                      '</a>'+
-                    '</td>'+
-                  '<tr>';
-                colorPalomita = 'grey-text text-lighten-3';
-              }
-        html +=   '</tbody>'+
-                    '</table>'+
-                    '<br><br>'+
-                  '</div>'+
-                  '<div class="col s12 m6 l6">'+
-                    '<div class="asignar-nivel" id="niveles-participante-'+idGrupo+'">'+
-                    '</div>'+
-                  '</div>'+
-                '</div>';        
-        document.getElementById('contenido').innerHTML = html;
-        M.AutoInit();
-    }).catch(err => {
-        console.log(err);
-    });
-};
-
-const buscar = (idGrupo) => {
-    let criterio = document.getElementById("buscarP").value;
-    console.log(criterio);
-    fetch('/gestionAdmin/gestionCiclos/buscar/'+criterio, {
-        method: 'GET'
-    }).then(result => {
-        return result.json(); //Regresa otra promesa
-    }).then(data => {
-        //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
-        let html = '<tbody id = "tablita">';
-        let colorPalomita = 'grey-text text-lighten-3';
-        for (p of data.participante) {
-          let apellidoP =  p.apellidoPaterno === 'null '? '&nbsp;':  p.apellidoPaterno === 'null'? '&nbsp;': p.apellidoPaterno;
-          let apellidoM =  p.apellidoMaterno === 'null '? '&nbsp;': p.apellidoMaterno === 'null'? '&nbsp;': p.apellidoMaterno;
-          for (let inscrito of data.inscritos){
-            if(inscrito.login === p.login){
-              colorPalomita = 'light-green-text text-accent-4';
-            }
-          }
-          html += '<tr>'+
-              '<td><i class="material-icons left '+colorPalomita+'" id = "paloma-'+p.login+'">check</i>' +p.nombreUsuario+' ' + apellidoP+' ' + apellidoM+' ' + '</td>'+
-              '<td>'+
-                '<a  onclick="registroObjetivos(&apos;'+p.login+'&apos;,&apos;'+idGrupo+'&apos;)" style="cursor: pointer;">'+
-                  '<i class="material-icons left">chevron_right</i>'+
-                '</a>'+
-              '</td>'+
-            '<tr>';
-          colorPalomita = 'grey-text text-lighten-3';
-        }
-        '</tbody>';     
-        document.getElementById('tablita').innerHTML = html;
-        M.AutoInit();
-
-    }).catch(err => {
-        console.log(err);
-    });
-};
-
-const registroObjetivos = (login, idGrupo) => {
-  let data = {
-    idGrupo: idGrupo,
-    login: login
-  };
-  console.log(data);
-  //función que manda la petición asíncrona
-  fetch('/gestionAdmin/gestionCiclos/select-nivel', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-          //'csrf-token': csrf
-      },
-      body: JSON.stringify(data)
-  }).then(result => {
-      return result.json(); //Regresa otra promesa
-  }).then(data => {
-    //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
-    //...
-    let html = '';
-    //Header 
-    html = '<div class="row">' +
-            '<h6>Inscribir a: ' + data.usuarios[0].nombreUsuario +' '+data.usuarios[0].apellidoPaterno + ' ' + data.usuarios[0].apellidoMaterno  + '</h6>';
-    //Registro nivel
-    
-      html +=   
-                  '<div >' +
-                    '<p class="grey-text text-darken-4" ><strong>Selecciona el nivel del participante.</strong></p>' +
-                  '</div>' +  
-                  '<div class="input-field ">'+
-                    '<select id = "nivelAsig-' + login+'" >'+
-                      '<option value="0" disabled selected> - </option>';
-                      
-                      for(nivel of data.niveles){
-                        html += '<option value="' + nivel.idNivel + '"> ' + nivel.nombreNivel + '</option>';
-                      }
-      html +=       '</select>' +
-                  '</div>' +  
-                  '<div class="asignar-ojetivos" id="objetivos-participante-grupo-'+idGrupo+'">'+
-                  '</div>'+
-                '</div>';                
-                
-    let id = 'niveles-participante-' + idGrupo;
-    document.getElementById(id).innerHTML = html;
-    M.AutoInit();
-
-    let idselect = 'nivelAsig-' + login;
-    //Si ya está inscrito carga el nivel y objetivos registrados actualmente
-    if (Object.keys(data.inscrito).length != 0){
-      selectNivel = document.getElementById(idselect);
-      selectNivel.options[(data.inscrito[0].idNivel-data.niveles[0].idNivel)+1].selected=true;
-      let idNivelObj = data.inscrito[0].idNivel;
-      M.AutoInit();
-      mostratObj(); 
-    }
-    
-    document.getElementById(idselect).onchange = () => {
-      mostratObj();
-    }
-    
-    function mostratObj() {
-        let idNivelObj = document.getElementById(idselect).value;
-        let data2 = {
-          idNivelObj: idNivelObj,
-          login: login,
-          idGrupo: idGrupo
-        };
-
-        console.log(data2);
-        //función que manda la petición asíncrona
-        fetch('/gestionAdmin/gestionCiclos/mostrar-obj', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-                //'csrf-token': csrf
-            },
-            body: JSON.stringify(data2)
-        }).then(result => {
-            return result.json(); //Regresa otra promesa
-        }).then(data2 => {
-          //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
-          //...
-          let html2 = '';
-          //Header 
-          html2 += 
-                      '<div>'+
-                        '<br><p class="grey-text text-darken-4" ><strong>Selecciona los objetivos para asignar al participante.</strong></p>'+
-                      '</div>'+
-                      '<table class="highlight">'+
-                        '<tbody>'+
-                          '<tr>'+
-                            '<td class = " light-blue-text text-darken-4">Seleccionar todos los objetivos.</td>'+
-                            '<td>'+
-                              '<label>'+
-                                '<input name ="selTodos" id="selTodos" type="checkbox" />'+ 
-                                '<span>.</span>'+
-                              '</label>'+  
-                            '</td>'+
-                          '</tr>'; 
-                        let todosobj= 0;
-                        let selectobj = 0;
-                        for (let obj of data2.objetivos){ 
-                          todosobj += 1;
-                          if(obj.paloma === 1){
-                            selectobj += 1;
-                              html2+= '<tr>'+
-                                '<td>'+ obj.descripcion + '</td>'+
-                                '<td>'+
-                                  '<label>'+
-                                    '<input name ="' +obj.idObjetivo + '" checked="checked" id="' +obj.idObjetivo + '" type="checkbox" />'+ 
-                                    '<span>.</span>'+
-                                  '</label>'+  
-                                '</td>'+
-                              '</tr>';
-                            }
-                            else {
-                              html2+= '<tr>'+
-                                '<td>'+ obj.descripcion + '</td>'+
-                                '<td>'+
-                                  '<label>'+
-                                    '<input name ="' +obj.idObjetivo + '" id="' +obj.idObjetivo + '" type="checkbox" />'+ 
-                                    '<span>.</span>'+
-                                  '</label>'+  
-                                '</td>'+
-                              '</tr>';
-                            }
-                        }
-                html2 += '</tbody> '+ 
-                        '</table>'+
-                        '<br>'+
-                        '<button class="modal-action waves-effect btn-flat grey lighten-1 right" id = "inscribir">Inscribir</button>';            
-                
-          let id2 = "objetivos-participante-grupo-"+idGrupo;
-          document.getElementById(id2).innerHTML = html2;
-          M.AutoInit();
-          if(selectobj === todosobj){
-            document.getElementById("selTodos").checked = true;
-          }
-
-          document.getElementById("selTodos").onchange = () => {
-            let isChecked =  document.getElementById("selTodos").checked;
-              if(isChecked){
-                for (let obj of data2.objetivos){ 
-                  document.getElementById(obj.idObjetivo).checked = true;
-                }
-              }
-              else{
-                for (let obj of data2.objetivos){ 
-                  document.getElementById(obj.idObjetivo).checked = false;
-                }
-              }
-          }
-          
-        document.getElementById("inscribir").onclick = () => {
-          const objetivos = [];
-          function PGO(login, idGrupo, idObjetivo, idNivel){
-            this.login = login;
-            this.idGrupo = idGrupo;
-            this.idObjetivo = idObjetivo;
-            this.idNivel = idNivel;
-          }
-          for(let obj of data2.objetivos){
-            let isChecked =  document.getElementById(obj.idObjetivo).checked;
-            if(isChecked){ 
-              const participante = new PGO(login, idGrupo,obj.idObjetivo, idNivelObj);
-              objetivos.push(participante); 
-            }
-          }
-          let obj = {
-            objetivos: objetivos
-          } 
-          fetch('/gestionAdmin/gestionCiclos/inscribir',{
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-                //'csrf-token': csrf
-            },
-            body: JSON.stringify(obj)
-          }).then(result => {
-            return result.json();
-          }).then (objetivos => {
-            let html = '', mensaje = '', color = '';
-            if (objetivos.error === undefined){
-              mensaje = objetivos.nombre[0].nombreUsuario + ' ' + objetivos.nombre[0].apellidoPaterno +' fue inscrito correctamente.';
-              color = 'grey';
-            }
-            else{
-              mensaje = objetivos.error.toString();
-              color = 'black';
-            }
-            let id = "niveles-participante-"+objetivos.grupo; 
-            document.getElementById(id).innerHTML = html;
-            M.toast({html: mensaje,classes: color}) 
-            document.getElementById('paloma-'+login).className = "material-icons left light-green-text text-accent-4";
-            M.AutoInit();
-          }).catch(err => {
-            console.log(err);
-          });
-        }
-          
-        }).catch(err => {
-          console.log(err);
-        });
-
-      }
-
-  }).catch(err => {
-    console.log(err);
-  });
-  }
-
-
-
-
-</script>

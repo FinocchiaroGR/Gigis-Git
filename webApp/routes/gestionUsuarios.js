@@ -34,11 +34,17 @@ const { isatty } = require('tty');
 
 
 
-subrouter.get('/', isAuth, gestionUserController.get);                  //Quitar isAuth para registrar sus usuarios
-subrouter.post('/', isAuth, gestionUserController.postNuevoUsuario);    //Quitar isAuth para registrar sus usuarios
+subrouter.get('/', isAuth, gestionUserController.get);
+subrouter.get('/buscar/:criterio', isAuth, gestionUserController.getBuscar);
+subrouter.get('/perfil/:login', isAuth, gestionUserController.getPerfil);
 
-subrouter.post('/crear-roll', gestionUserController.postNuevoRoll);
-subrouter.post('/modificar-roll', gestionUserController.postModRoll);
-subrouter.post('/update-roll', gestionUserController.postUpdateRoll);
+subrouter.post('/', isAuth, gestionUserController.postNuevoUsuario);
+subrouter.post('/modificar-usuario', isAuth, gestionUserController.postModUser);
+subrouter.post('/update-usuario', isAuth, gestionUserController.postUpdateUser);
+subrouter.use('/eliminar-usuario', isAuth, gestionUserController.postDeleteUser);
+
+subrouter.post('/crear-roll', isAuth, gestionUserController.postNuevoRoll);
+subrouter.post('/modificar-roll', isAuth, gestionUserController.postModRoll);
+subrouter.post('/update-roll', isAuth, gestionUserController.postUpdateRoll);
 
 module.exports = subrouter;
