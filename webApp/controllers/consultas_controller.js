@@ -2,6 +2,10 @@ const Arrow = require('../models/arrow');
 const Ciclo = require('../models/ciclos');
 const Programas = require('../models/programas');
 const DatosConsultas = require('../models/consultasResultados');
+const Historial = require('../models/consultasHistorial');
+const Participante = require('../models/participantes');
+const fs = require('fs');
+const http = require('http');
 
 let datosConsultas = new DatosConsultas();
 const arrows = Arrow.fetchAll();
@@ -10,7 +14,7 @@ exports.getResultados = ((request, response, next) => {
     const permiso = request.session.permisos;
     if(permiso.includes(5)){ 
         let bools = datosConsultas.getBools();
-        Programas.fetchAll()
+        Programas.fetchAllSOrd()
         .then(([rows_Programas, fieldData_Prog]) => {
             //console.table(rows_Programas);
             datosConsultas.fetch()
@@ -24,7 +28,7 @@ exports.getResultados = ((request, response, next) => {
                         //console.table(rowsGen);
                         DatosConsultas.fetchPorGroup_cons()
                         .then(([rowsGroup, fieldData_Group]) => {
-                            //console.table(rowsGroup);
+                            console.table(rowsGroup);
                             response.render('consultas_Resultados', {
                                 tituloDeHeader: "Consulta - Resultados",
                                 tituloBarra: "Resultados de consulta",
@@ -95,9 +99,9 @@ exports.getResultados = ((request, response, next) => {
 });
 
 exports.postResultados = ((request, response, next) => {
-    console.log("Accion post en resultados");
-    response.status(302);
-    response.redirect('/consultas');
+    var file = __dirname + './../downloads/reporte.csv';
+    response.download(file);
+    //console.log("Accion post en resultados");
 });
 
 exports.getResultadosGrupo = ((request, response, next) => {
@@ -130,13 +134,13 @@ exports.getResultadosGrupo = ((request, response, next) => {
             }).catch( err => {
                 request.session.mensaje = 'Error de comunicacion con el servidor';
                 request.session.bandera = true;
-                response.redirect('/consultas');
+                response.redirect('/consultas/Resultados');
                 console.log(err);
             });
         }).catch( err => {
             request.session.mensaje = 'Error de comunicacion con el servidor';
             request.session.bandera = true;
-            response.redirect('/consultas');
+            response.redirect('/consultas/Resultados');
             console.log(err);
         });
     }
@@ -153,10 +157,12 @@ exports.postResultadosGrupo = ((request, response, next) => {
 });
 
 exports.getConsultas = ((request, response, next) => {
-    const mensaje = request.session.mensaje === undefined ? undefined : request.session.mensaje;
-    const bandera = request.session.bandera === undefined ? undefined : request.session.bandera;
+    const mensaje = request.session.mensaje === undefined ? null : request.session.mensaje;
+    const bandera = request.session.bandera === undefined ? null : request.session.bandera;
     const permiso = request.session.permisos;
-    const tienePermiso = permiso.includes(5) || permiso.includes(14);
+    console.log(request.session.mensaje);
+    console.log(request.session.bandera);
+    const tienePermiso = permiso.includes(5);
     if(tienePermiso){     
         DatosConsultas.prepConsulta();
 
@@ -208,8 +214,6 @@ exports.getConsultas = ((request, response, next) => {
     else {
         return response.redirect('/gestionAdmin');
     }
-    request.session.mensaje = undefined;
-    request.session.bandera = undefined;
 });
 
 exports.postConsultas = ((request, response, next) => {
@@ -246,4 +250,64 @@ exports.postSelProgram = ((request, response, next) => {
     datosConsultas.setListaProg(request.body.listaProg);
     //listaProgam = request.body.listaProg;
     //console.table(listaProgam);
+});
+
+exports.getHistorial = ((request, response, next) => {
+    const permiso = request.session.permisos;
+    const tienePermiso = permiso.includes(14);
+    if(tienePermiso){     
+        Ciclo.fetchFechaCiclo(0)
+        .then(([rows_Fechas, fieldData_Fechas]) => {
+            Ciclo.fetchCantPorAno(0)
+            .then(([rows_CantAno, fieldData_CantAno]) => {
+                Participante.fetchAll()
+                .then(([rows_Participantes, fieldData_Prog]) => {
+                    response.render('consultas_Historial', {
+                        tituloDeHeader: "Historial - Consultas",
+                        tituloBarra: "Historial por alumno",
+                        permisos: permiso,
+                        años: rows_CantAno,
+                        fechasDeCiclos: rows_Fechas,
+                        participantes: rows_Participantes,
+                        numPart: rows_Participantes.length,
+                        meses: DatosConsultas.fetchMeses(),
+                        permisos: request.session.permisos,
+                        backArrow: {display: 'block', link: '/consultas'},
+                        forwArrow: arrows[1]
+                    });
+                    console.log("Consultas - Historial");
+                    response.status(201);
+                }).catch(err => {
+                    response.redirect('/consultas');
+                    console.log(err);
+                });
+            }).catch(err => {
+                response.redirect('/consultas');
+                console.log(err);
+            });
+        }).catch(err => {
+            response.redirect('/consultas');
+            console.log(err);
+        });
+    }
+    else {
+        return response.redirect('/gestionAdmin');
+    }
+});
+
+exports.returnHistorial = ((request, response, next) => {
+
+    Historial.fetchHistorial(
+        request.params.criterio,
+        request.body.inCiclosIni,
+        request.body.chRangoCiclos,
+        request.body.inCiclosFin
+    )
+        .then(([rows, fieldData]) => {
+            //console.table(rows);
+            return response.status(200).json({historial: rows});
+        })
+        .catch(err => {
+            console.log(err)
+        });
 });
