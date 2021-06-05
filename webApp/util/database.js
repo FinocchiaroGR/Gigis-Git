@@ -1,15 +1,13 @@
 const mysql = require('mysql2');
+const user = require('./secret.js');
+const password = require('./secret.js');
+const db = require('./secret.js');
 
 const pool = mysql.createPool({
-    // user : 'doadmin',
-    // password : 'lnlosq5d7ulifaug',
-    user : 'Test1',
-    password: 'Test@password321',
+    user : user,
+    password: password,
     host : 'localhost',
-    // host : 'gigisplayhousebd-do-user-9229702-0.b.db.ondigitalocean.com',
-    // port : '25060',
-    // database : 'gigisplayhousedb'
-    database : 'GigisT'
+    database : db
 });
 
 module.exports = pool.promise();
