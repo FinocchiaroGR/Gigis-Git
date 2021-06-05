@@ -1,10 +1,13 @@
 const mysql = require('mysql2');
+const user = require('./secret.js');
+const password = require('./secret.js');
+const db = require('./secret.js');
 
 const pool = mysql.createPool({
-    user : 'calificaciones_user',
-    password: '7yZCmYoqWa6*Wz!t7_@2nMMqc8eH',
+    user : user,
+    password: password,
     host : 'localhost',
-    database : 'calificaciones'
+    database : db
 });
 
 module.exports = pool.promise();
