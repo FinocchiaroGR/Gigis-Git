@@ -1,3 +1,1 @@
-exports.user = 'calificaciones_user';
-exports.password = '7yZCmYoqWa6*Wz!t7_@2nMMqc8eH';
-exports.db = 'calificaciones';
+exports.secret = 'ytfvvjsdfmc467879cievy8ihrwtbuc4y+nu948wbyn8cr4mivnj8bfugnc';
