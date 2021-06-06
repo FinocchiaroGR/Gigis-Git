@@ -41,14 +41,19 @@ exports.postlogin = (request, response, next) => {
                             }).catch(err => {
                                 console.log(err);                  
                             });
-                        console.log(request.session.rol);
+                        //console.log(request.session.rol);
                         await Usuario.permisos(rows[0].login)
                             .then(([permisos,fieldData2]) => {
                                 for (let permiso of permisos){
                                     let p = permiso.idFuncion;
                                     request.session.permisos.push(p);
                                 }
-                                console.log(request.session.permisos);
+                                //console.log(request.session.permisos);
+                                let today = new Date();
+                                let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+                                let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                                let dateTime = date+' '+time;
+                                console.log('[' + dateTime + '] Succesful Login -> ' + 'Login: ' +  request.session.user + ' - userName: ' + request.session.nombreU + ' - Rol: ' + request.session.rol);
                             }).catch(err => {
                                 console.log(err);                  
                             });
@@ -151,13 +156,13 @@ exports.postPerfil2 = (request, response) => {
     let pBool = false;
     Rol.fetchRolNameByLogin(login)
         .then(([roles]) => {
-            console.log(roles);
+            //console.log(roles);
             for (let rol of roles) {
                 if (rol.idRol == 2){
                     tBool = true;
                     Terapeuta.fetchById(login)
                         .then(([terapeuta]) => {
-                            console.log(terapeuta);
+                            //console.log(terapeuta);
                             return response.status(200).json({
                                 tBool : tBool,
                                 pBool : pBool,

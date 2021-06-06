@@ -11,7 +11,7 @@ const nombreUMiddleWare = require('./util/nombreUsuario.js');
 const csrf = require('csurf');
 const csrfProtection = csrf();
 
-const secret = require('./util/secret.js');
+const secret = require('./util/secret');
 
 //EJS
 app.set('view engine', 'ejs');
@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(session({
-    secret: secret.secret, //cambiar a otra variable externa que no se versione
+    secret: secret.secretSession, //cambiar a otra variable externa que no se versione
     resave: false, //La sesión no se guardará en cada petición, sino sólo se guardará si algo cambió 
     saveUninitialized: false, //Asegura que no se guarde una sesión para una petición que no lo necesita
 }));

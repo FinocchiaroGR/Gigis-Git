@@ -1,14 +1,14 @@
 const mysql = require('mysql2');
-const pathSecret = './secret2.js'
-const user = require(pathSecret);
-const password = require(pathSecret);
-const BD = require(pathSecret);
+const secret = require('./secret2.js');
+const user = secret.user;
+const password = secret.password;
+const bd = secret.bd;
 
 const pool = mysql.createPool({
     user : user,
     password: password,
     host : 'localhost',
-    database : BD
+    database : bd
 });
 
 module.exports = pool.promise();
