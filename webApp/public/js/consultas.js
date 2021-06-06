@@ -187,7 +187,7 @@ const buscarHistorial = () => {
                         '</tr>';
             }
             html += '</tbody></table>';
-            //console.log(document.getElementById('tablaHistorial').innerHTML);
+            
             document.getElementById('tablaHistorial').innerHTML = html;
         }
         

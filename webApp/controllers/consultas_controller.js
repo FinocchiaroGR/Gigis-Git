@@ -58,7 +58,7 @@ exports.getResultados = ((request, response, next) => {
                                 backArrow: {display: 'block', link: '/consultas'},
                                 forwArrow: arrows[1]
                             });
-                            console.log("Consultas Resultados");
+                            //console.log("Consultas Resultados");
                             response.status(201);
                         }).catch( err => {
                             request.session.mensaje = 'Error de comunicacion con el servidor1';
@@ -245,7 +245,7 @@ exports.postResultados = ((request, response, next) => {
     else {
         response.redirect('/consultas/resultados');
     }
-    console.log("Archivo CSV en resultados");
+    //console.log("Archivo CSV en resultados");
 });
 
 exports.getResultadosGrupo = ((request, response, next) => {
@@ -273,7 +273,7 @@ exports.getResultadosGrupo = ((request, response, next) => {
                     backArrow: {display: 'block', link: '/consultas/Resultados'},
                     forwArrow: arrows[1]
                 });
-                console.log("Consultas Resultados por Grupo");
+                //console.log("Consultas Resultados por Grupo");
                 response.status(201);
             }).catch( err => {
                 request.session.mensaje = 'Error de comunicacion con el servidor';
@@ -342,8 +342,6 @@ exports.getConsultas = ((request, response, next) => {
     const mensaje = request.session.mensaje === undefined ? null : request.session.mensaje;
     const bandera = request.session.bandera === undefined ? null : request.session.bandera;
     const permiso = request.session.permisos;
-    console.log(request.session.mensaje);
-    console.log(request.session.bandera);
     const tienePermiso = permiso.includes(5);
     if(tienePermiso){     
         DatosConsultas.prepConsulta();
@@ -372,7 +370,7 @@ exports.getConsultas = ((request, response, next) => {
                     });
                     request.session.mensaje = undefined;
                     request.session.bandera = undefined;
-                    console.log("Consultas");
+                    //console.log("Consultas");
                     response.status(201);
                 }).catch(err => {
                     request.session.mensaje = 'Error de comunicacion con el servidor';
@@ -402,7 +400,7 @@ exports.getConsultas = ((request, response, next) => {
 
 exports.postConsultas = ((request, response, next) => {
     if(datosConsultas.getModoConsulta() < 1){
-        console.log("Accion post en consultas INCORRECTA");
+        //console.log("Accion post en consultas INCORRECTA");
         request.session.mensaje = 'Debe seleccionar al menos un programa';
         request.session.bandera = true;
         response.status(304);
@@ -423,7 +421,7 @@ exports.postConsultas = ((request, response, next) => {
             request.body.swSexo === "on" ? true : false,
             request.body.datosPart === "on" ? true : false,
             request.body.datosProg === "on" ? true : false);
-        console.log("Accion post en consultas");
+        //console.log("Accion post en consultas");
         response.status(302);
         response.redirect('/consultas/Resultados');
         response.end();
@@ -458,7 +456,7 @@ exports.getHistorial = ((request, response, next) => {
                         backArrow: {display: 'block', link: '/consultas'},
                         forwArrow: arrows[1]
                     });
-                    console.log("Consultas - Historial");
+                    //console.log("Consultas - Historial");
                     response.status(201);
                 }).catch(err => {
                     response.redirect('/consultas');
