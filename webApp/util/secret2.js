@@ -1,3 +1,3 @@
 exports.user = 'root';
 exports.password = '';
-exports.db = 'gigisplayhousebd_v7';
+exports.BD = 'gigisplayhousebd_v7';

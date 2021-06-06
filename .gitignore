@@ -7,7 +7,10 @@
 node_modules/
 dist/
 uploads/
-downloads/ 
+downloads/
+
+# CSV files
+*.csv
 
 # Compiled Java class files
 *.class
@@ -49,5 +52,3 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
-
-~$Cronograma Gigis.xlsx
