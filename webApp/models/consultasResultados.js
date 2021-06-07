@@ -260,13 +260,13 @@ module.exports = class DatosConsultas {
 
     static DatosGenGrupo(){
         //CALL consultaGenGrupo ( grupo INT )
-        let texto = 'CALL consultaGenGrupo (?)';
-        let vars = [id];
-        return db.execute(texto,vars);
-        /*let texto = 'SELECT C.idGrupo, C.idPrograma, C.idCiclo, P.nombrePrograma, U.nombreUsuario, U.apellidoPaterno, U.apellidoMaterno,'+
+        /*let texto = 'CALL consultaGenGrupo ()';
+        let vars = [];
+        return db.execute(texto,vars);*/
+        let texto = 'SELECT C.idGrupo, C.idPrograma, C.idCiclo, P.nombrePrograma, U.nombreUsuario, U.apellidoPaterno, U.apellidoMaterno,'+
         ' AVG(C.CalifFinal) AS `Prom_CaliF`, AVG(C.Avance) AS `Prom_Ava`'+
         ' FROM consultagrupo C, programas P, grupos_terapeutas GT, usuarios U WHERE'+
         ' C.idGrupo = GT.idGrupo AND GT.login = U.login AND P.idPrograma=C.idPrograma';
-        return db.execute(texto,[]);*/
+        return db.execute(texto,[]);
     }
 };

@@ -38,7 +38,7 @@ exports.getResultados = ((request, response, next) => {
                                 cantCol : metaData.TotCol,
                                 cantPart : metaData.TotPart,
                                 ciclos : {ini : parseInt(metaData.cicloIni),
-                                        fin : parseInt(metaData.cicloFin)},
+                                          fin : parseInt(metaData.cicloFin)},
                                 listaProg : metaData.listaProg,
                                 //bools
                                 estadoConsulta: bools.estadoConsulta,
@@ -142,7 +142,7 @@ exports.postResultados = ((request, response, next) => {
                             }
                             if(bools.mostrarCalif) {
 
-                                let acumProm=0,contProm = 0,flagfin=0, flagIni=0;
+                                let acumProm=0,contProm = 0,flagfin=10, flagIni=9;
                                 for(let j = 9; j<col_Datos.length; j++) { //9 porque es la primera calif Final
 
                                     texto += (Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10) + ',';
@@ -160,8 +160,8 @@ exports.postResultados = ((request, response, next) => {
 
                                 texto += (Math.round((datos[i][col_Datos[flagIni]['name']] ) * 10) / 10) +',';
                                 texto += (Math.round((datos[i][col_Datos[flagfin]['name']] ) * 10) / 10) +',';
-                                texto += (Math.round((acumProm/contProm ) * 10) / 10) + ',';
-                                texto += (Math.round(((datos[i][col_Datos[flagfin]['name']] - datos[i][col_Datos[flagIni]['name']])/(lisProg[metaData.listaProg[0]].puntajeMaximo-1)*100 ) * 10) / 10) + '%,';
+                                texto += (contProm === 0 ? 0 : Math.round((acumProm/contProm) * 10) / 10) + ',';
+                                texto += (Math.round(((datos[i][col_Datos[flagfin]['name']] - datos[i][col_Datos[flagIni]['name']])/(lisProg[metaData.listaProg[0]-1].puntajeMaximo-1)*100 ) * 10) / 10) + '%,';
                             }
                             texto += '\n';
                         }
@@ -258,7 +258,7 @@ exports.getResultadosGrupo = ((request, response, next) => {
         datosConsultas.fetchPorGrupo(id)
         .then(([rows_dato, fieldData_dato]) => {
             //console.table(rows_dato);
-            DatosConsultas.DatosGenGrupo(id)
+            DatosConsultas.DatosGenGrupo()
             .then(([rows_Gen, fieldData_Gen]) => {
                 //console.table(rows_Gen);
                 response.render('consultas_Programa', {

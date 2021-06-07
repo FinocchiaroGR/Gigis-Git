@@ -18,11 +18,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     M.AutoInit();
-    $(document).ready(function(){
-        $('select').formSelect();
-        $('.js-example-basic-single').select2();
-      });
-
 
 var listaProg = [];
 
