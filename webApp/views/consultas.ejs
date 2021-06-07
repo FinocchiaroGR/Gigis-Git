@@ -12,12 +12,13 @@
             <div class="row valign-wrapper">
                 <div class="input-field col s5 m4 l4 xl4">
                     <select id="inCiclosIni" name="inCiclosIni">
-                        <% let acum_ano_ini = 1; let cont_ano_ini = acum_ano_ini; %> 
+                        <% let acum_ano_ini = 1; %> 
                         <% for (let l = 0; l<años.length; l++) { %>
                             <optgroup label="<%= años[l].ano_inicio %>">
+                                <% let cont_ciclo = 1; %>
                                 <% for (cont_ano_ini = acum_ano_ini; cont_ano_ini < acum_ano_ini + años[l].cant_por_ano_inicio ; cont_ano_ini++) { %>
-                                    <option value="<%= cont_ano_ini %>"><%= cont_ano_ini %>: <%= meses[fechasDeCiclos[cont_ano_ini-1].mes_inicio] %>-<%= fechasDeCiclos[cont_ano_ini-1].dia_inicio %></option>
-                                <% } %>
+                                    <option value="<%= cont_ano_ini %>"><%= cont_ciclo %>: <%= meses[fechasDeCiclos[cont_ano_ini-1].mes_inicio] %>-<%= fechasDeCiclos[cont_ano_ini-1].dia_inicio %></option>
+                                <% cont_ciclo++; } %>
                             <% acum_ano_ini = cont_ano_ini; %>
                             </optgroup>
                         <% } %>

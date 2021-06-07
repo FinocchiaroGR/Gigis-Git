@@ -7,8 +7,8 @@
           <td rowspan="2"><strong>Participantes</strong></td>
           
           <% if(mostrarSexEdad) { %>
-            <td class="center" rowspan="2">Sexo</strong></td>
-            <td class="center" rowspan="2">Edad</strong></td>
+            <td class="center" rowspan="2"><strong>Sexo</strong></td>
+            <td class="center" rowspan="2"><strong>Edad</strong></td>
           <% } %>
 
           <% if(mostrarCalif) { %>
@@ -34,8 +34,8 @@
         <tr>
           <% if(mostrarCalif) { %>
             <% for(let i = 0; i<cantCol; i++) { %>
-              <td class="center" > Calificación <br> Inicial</strong></td>
-              <td class="center"> Calificación <br> Final</strong></td>
+              <td class="center" > <strong>Calificación <br> Inicial</strong></td>
+              <td class="center"> <strong>Calificación <br> Final</strong></td>
             <% } %>
           <% } %>
         </tr>
@@ -53,7 +53,7 @@
 
           <% if(mostrarCalif) { %>
 
-            <% let acumProm=0,contProm = 0,flagfin=0, flagIni=0, par=1;%>
+            <% let acumProm=0,contProm = 0,flagfin=10, flagIni=9, par=1;%>
             <% for(let j = 9; j<col_Datos.length; j++) { //9 porque es la primera calif Final %>
 
               <td class="center"><%= Math.round((datos[i][col_Datos[j]['name']] ) * 10) / 10 %> </td>
@@ -70,8 +70,8 @@
             <% } %>
             <td class="center"><%= Math.round((datos[i][col_Datos[flagIni]['name']] ) * 10) / 10 %></td>
             <td class="center"><%= Math.round((datos[i][col_Datos[flagfin]['name']] ) * 10) / 10 %></td>
-            <td class="center"><%= Math.round((acumProm/contProm ) * 10) / 10 %></td>
-            <td class="center"><%= Math.round(((datos[i][col_Datos[flagfin]['name']] - datos[i][col_Datos[flagIni]['name']])/(programas[listaProg[0]].puntajeMaximo-1)*100 ) * 10) / 10 %>%</td>
+            <td class="center"><%= contProm === 0 ? 0 : Math.round((acumProm/contProm) * 10) / 10 %></td>
+            <td class="center"><%= Math.round(((datos[i][col_Datos[flagfin]['name']] - datos[i][col_Datos[flagIni]['name']])/(programas[listaProg[0]-1].puntajeMaximo-1)*100 )*10)/10 %>%</td>
           <% } %>
         </tr>
       <% } %>
