@@ -379,6 +379,8 @@ INSERT INTO `roles_funciones` (`idRol`, `idfuncion`)
 
 INSERT INTO `usuarios_roles` (`login`, `idRol`) VALUES ('sandra@hotmail.com', '4');
 
+INSERT INTO `roles_funciones` (`idRol`, `idfuncion`) VALUES ('1','15');
+
 #--=========================================================================
 #--=========================== Stored Procedures ===========================
 #--=========================================================================
