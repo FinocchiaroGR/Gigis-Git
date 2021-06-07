@@ -220,7 +220,7 @@ exports.postResultados = ((request, response, next) => {
                             texto += '\n';
                         }
                     }                    
-                    let file = __dirname + './../downloads/reporte.csv';
+                    let file = __dirname + '/../downloads/reporte.csv';
                     fs.writeFileSync(file, texto, {encoding: "latin1", flag: "w"});
                     response.download(file);
                 }).catch( err => {
@@ -324,7 +324,7 @@ exports.postResultadosGrupo = ((request, response, next) => {
                 texto += '\n';
             }
                             
-            let file = __dirname + './../downloads/reporte.csv';
+            let file = __dirname + '/../downloads/reporte.csv';
             fs.writeFileSync(file, texto, {encoding: "latin1", flag: "w"});
             response.download(file);
         }).catch( err => {
