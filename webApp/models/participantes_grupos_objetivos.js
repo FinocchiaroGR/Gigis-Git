@@ -53,7 +53,7 @@ module.exports = class Participante_Grupo_Objetivo {
     }
 
     static fetchTerapeutasCiclos(idCiclo) {
-        return db.execute('SELECT login, idPrograma FROM `grupos_programas_ciclos_terapeutas` WHERE idCiclo = ?',
+        return db.execute('SELECT login, idPrograma FROM `grupos_programas_ciclos` WHERE idCiclo = ?',
         [idCiclo]);
     }
 }
