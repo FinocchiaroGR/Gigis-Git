@@ -255,6 +255,9 @@ CHECK (fechaInicial < fechaFinal);
 ALTER TABLE programas 
 ADD UNIQUE `nombre_unico` (`nombrePrograma`);
 
+ALTER TABLE roles 
+ADD UNIQUE `nombreRol_unico` (`nombre`);
+
 
 
 #--=========================================================================
