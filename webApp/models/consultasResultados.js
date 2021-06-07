@@ -252,7 +252,7 @@ module.exports = class DatosConsultas {
         }
         return db.execute(texto,vars)
         .then(() => {
-            return db.execute('SELECT * FROM consultagrupo',[]);
+            return db.execute('SELECT * FROM ConsultaGrupo',[]);
         }).catch( err => {
             console.log(err);
         });
