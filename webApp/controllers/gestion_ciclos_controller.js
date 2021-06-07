@@ -228,8 +228,18 @@ exports.getAgrCiclo = (request,response,next) => {
             .then(([terapeutas, fieldData1]) => {
                 Ciclo.fetchFechaFinalUltimoCiclo()
                 .then(([fechaLimite, fieldData1]) => {
+                    if(fechaLimite.length === 0){
+                        fechaLimite = [
+                            {
+                                fechaFinal : 0
+                            }
+                        ];
+                    }
                     Grupo.fetchIdUltimoGrupo()
                         .then(([idUltimoGrupo, fieldData1]) => {
+                        if(idUltimoGrupo[0].idlastgrupo === null){
+                            idUltimoGrupo[0].idlastgrupo = 0;
+                        }
                         request.session.idlastgrupo =  idUltimoGrupo[0].idlastgrupo;  
                         response.render('gc_agregar_ciclo', {
                             fechaLimite: fechaLimite,
@@ -472,7 +482,7 @@ exports.get = (request,response,next) => {
     if(permisoGestionCiclos) { 
         Ciclo.fetchIdUltimo()
             .then(([idUltimoCiclo, fieldData1]) => {
-                request.session.idlastciclo = idUltimoCiclo[0].idCiclo;
+                request.session.idlastciclo = idUltimoCiclo[0].idCiclo === null ? 0 : idUltimoCiclo[0].idCiclo;
                 Ciclo.fetchAll()
                 .then(([ciclos, fieldData1]) => {
                     Ciclo.fetchCiclosAnioActual()

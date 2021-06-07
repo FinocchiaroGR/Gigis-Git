@@ -8,8 +8,7 @@ node_modules/
 dist/
 uploads/
 downloads/
-<<<<<<< HEAD
-=======
+~$util/secret2.js
 
 # CSV files
 *.csv
