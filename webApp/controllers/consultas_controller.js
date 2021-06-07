@@ -261,7 +261,7 @@ exports.getResultadosGrupo = ((request, response, next) => {
             DatosConsultas.DatosGenGrupo()
             .then(([rows_Gen, fieldData_Gen]) => {
                 //console.table(rows_Gen);
-                response.render('consultas_Programa', {
+                response.render('consultas_programa', {
                     tituloDeHeader: 'Resultados ' + rows_Gen[0].nombrePrograma,
                     tituloBarra: 'Resultados - ' + rows_Gen[0].nombrePrograma + ' - Ciclo ' + rows_Gen[0].idCiclo,
                     permisos: permiso,
@@ -443,7 +443,7 @@ exports.getHistorial = ((request, response, next) => {
             .then(([rows_CantAno, fieldData_CantAno]) => {
                 Participante.fetchAll()
                 .then(([rows_Participantes, fieldData_Prog]) => {
-                    response.render('consultas_Historial', {
+                    response.render('consultas_historial', {
                         tituloDeHeader: "Historial - Consultas",
                         tituloBarra: "Historial por alumno",
                         permisos: permiso,
