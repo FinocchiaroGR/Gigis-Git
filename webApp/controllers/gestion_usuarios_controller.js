@@ -173,7 +173,7 @@ exports.postNuevoRoll = (request, response) => {
                     });
             })
             .catch( err => {
-                request.session.mensaje = 'Ya existe un rol con el mismo nombre nombre';
+                request.session.mensaje = 'Ya existe un rol con el mismo nombre de rol';
                 request.session.bandera = true; 
                 response.redirect('/gestionAdmin/gestionUsuarios');
                 console.log(err);
