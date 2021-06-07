@@ -155,7 +155,7 @@ exports.postNuevoRoll = (request, response) => {
                                 const add = new Rol_Func(idRol[0].idRol, idfuncion);
                                 add.save()
                                     .catch( (err) => {
-                                        request.session.mensaje = 'Ya existe un rol con el mismo nombre de rol';
+                                        request.session.mensaje = 'Error de comunicacion con el servidor';
                                         request.session.bandera = true; 
                                         response.redirect('/gestionAdmin/gestionUsuarios');
                                         console.log(err);
@@ -167,7 +167,7 @@ exports.postNuevoRoll = (request, response) => {
                         response.redirect('/gestionAdmin/gestionUsuarios');
                     })
                     .catch( (err) => {
-                        request.session.mensaje = 'Ya existe un rol con el mismo nombre de rol';
+                        request.session.mensaje = 'Error de comunicacion con el servidor';
                         request.session.bandera = true;
                         console.log(err);
                     })
