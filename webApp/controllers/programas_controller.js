@@ -85,8 +85,8 @@ exports.objetivosParticipantes = (request, response, next) => {
 
 exports.registroPuntajes = (request, response, next) => {
   for (participante of request.body.objetivos){
-    let puntaje_final = participante.pFinal === '0' ? null : participante.pFinal;
-    let puntaje_inicial = participante.pInicial === '0' ? null : participante.pInicial;
+    let puntaje_final = participante.pFinal === ' ' ? null : participante.pFinal;
+    let puntaje_inicial = participante.pInicial === ' ' ? null : participante.pInicial;
     Participante_Grupo_Objetivo.ActualizarPuntajes(participante.login, participante.idGrupo, participante.idObjetivo, puntaje_inicial, puntaje_final)
       .then(() =>{
       }).catch((err) => {
