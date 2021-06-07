@@ -167,7 +167,7 @@ exports.postNuevoRoll = (request, response) => {
                         response.redirect('/gestionAdmin/gestionUsuarios');
                     })
                     .catch( (err) => {
-                        request.session.mensaje = 'Error de comunicacion con el servidor';
+                        request.session.mensaje = 'Ya existe un rol con el mismo nombre de rol';
                         request.session.bandera = true;
                         console.log(err);
                     })
