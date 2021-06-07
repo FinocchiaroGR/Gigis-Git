@@ -11,8 +11,8 @@ downloads/
 ~$util/secret2.js
 
 # CSV files
-*.csv
->>>>>>> develop
+#*.csv
+
 
 # Compiled Java class files
 *.class
