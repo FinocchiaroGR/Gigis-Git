@@ -228,7 +228,7 @@ module.exports = class DatosConsultas {
         ' WHERE U.idPrograma = P.idPrograma AND U.idGrupo = GT.idGrupo AND GT.login = S.login'+
         ' GROUP BY U.idGrupo) t1 LEFT JOIN'+
         ' (SELECT COUNT(idGrupo) AS `TotalAlumnInscr`, AVG(c.CalifFinal) AS `Prom_calif_gr`, AVG(c.Avance) AS `Prom_Ava_gr`, idGrupo'+
-        ' FROM califdatos c GROUP BY idGrupo) t2'+
+        ' FROM CalifDatos c GROUP BY idGrupo) t2'+
         ' ON (t1.idGrupo = t2.idGrupo)',[]);
     }
 
