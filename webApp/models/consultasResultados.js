@@ -224,7 +224,7 @@ module.exports = class DatosConsultas {
     static fetchPorGroup_cons(){
         return db.execute('SELECT t1.*, t2.TotalAlumnInscr, t2.Prom_calif_gr, t2.Prom_Ava_gr FROM'+
         ' (SELECT COUNT(U.idGrupo) AS `TotalMatchs`, U.idGrupo, U.idCiclo, P.nombrePrograma, P.dirImagen, S.nombreUsuario, S.apellidoPaterno, S.apellidoMaterno'+
-        ' FROM ultimaconsulta U, grupos_terapeutas GT, usuarios S, programas P'+
+        ' FROM ultimaConsulta U, grupos_terapeutas GT, usuarios S, programas P'+
         ' WHERE U.idPrograma = P.idPrograma AND U.idGrupo = GT.idGrupo AND GT.login = S.login'+
         ' GROUP BY U.idGrupo) t1 LEFT JOIN'+
         ' (SELECT COUNT(idGrupo) AS `TotalAlumnInscr`, AVG(c.CalifFinal) AS `Prom_calif_gr`, AVG(c.Avance) AS `Prom_Ava_gr`, idGrupo'+
