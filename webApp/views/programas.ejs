@@ -6,6 +6,7 @@
   <!------------------Fila 1 ------------------------>
   <% for (programa of programas){
     let existeTerapeuta = false; 
+    let numTerapeutas = 0;
     for (grupo of grupos){
       if(usuario === grupo.login && programa.idPrograma === grupo.idPrograma){ 
         existeTerapeuta = true; 
@@ -30,29 +31,39 @@
             <p>Ciclo: <%= programa.fechaInicio%> - <%= programa.fechaFinal%></p>
             <p></p>
             <% if (rol !== 1 ){ %>
-              <p>Grupos:</p>
+              <p>Terapeutas:</p>
               <br />
               <div class="row">
                 <div class="col s12">
                   <div>
                     <% for (grupo of grupos) { 
                       if (programa.idPrograma === grupo.idPrograma){ 
-                        switch (grupo.numeroGrupo) { 
-                          case 1: %>
-                            <i class="material-icons medium red-text">looks_one</i>
-                            <% break; 
-                          case 2: %>
-                            <i class="material-icons medium red-text">looks_two</i>
-                            <% break; 
-                          case 3: %>
-                            <i class="material-icons medium red-text">looks_3</i>
-                            <% break; 
-                          case 4: %>
-                            <i class="material-icons medium red-text">looks_4</i>
-                            <% break; 
-                          } 
+                        numTerapeutas++;
                         } 
                       } %>
+                      <% switch (numTerapeutas) { 
+                        case 0: %>
+                          <i class="material-icons medium red-text">exposure_zero</i>
+                          <% break; 
+                        case 1: %>
+                          <i class="material-icons medium red-text">looks_one</i>
+                          <% break; 
+                        case 2: %>
+                          <i class="material-icons medium red-text">looks_two</i>
+                          <% break; 
+                        case 3: %>
+                          <i class="material-icons medium red-text">looks_3</i>
+                          <% break; 
+                        case 4: %>
+                          <i class="material-icons medium red-text">looks_4</i>
+                        <% break; 
+                        case 5: %>
+                          <i class="material-icons medium red-text">looks_5</i>
+                        <% break; 
+                        case 6: %>
+                          <i class="material-icons medium red-text">looks_6</i>
+                          <% break; 
+                        } %>
                   </div>
                 </div>
               </div>
