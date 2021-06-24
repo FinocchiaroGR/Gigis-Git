@@ -78,5 +78,9 @@ module.exports = class Programas {
         );
     }
 
+    static fetchProgramasCicloAnterior() {
+        db.execute('SET lc_time_names = "es_MX";')
+        return db.execute('SELECT G.idGrupo, G.idPrograma, nombrePrograma,GP.login, P.dirImagen, DATE_FORMAT(fechaInicial, "%M") AS fechaInicio , DATE_FORMAT(fechafinal, "%M %Y") AS fechaFinal FROM grupos G ,ciclos C, programas P, grupos_terapeutas GP WHERE G.idCiclo=C.idCiclo AND G.idPrograma=P.idPrograma AND G.idGrupo = GP.idGrupo AND fechaInicial = (SELECT fechaInicial FROM ciclos WHERE idCiclo = (SELECT MAX(idCiclo) FROM ciclos WHERE idCiclo <  (SELECT MAX(idCiclo) FROM ciclos) )) GROUP BY idPrograma'
+        );
+    }
 }
-

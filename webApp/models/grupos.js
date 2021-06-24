@@ -57,4 +57,16 @@ module.exports = class Grupo {
       [idCiclo]);
   }
 
+  static fethcGruposProgramaAnterior(idPrograma) {
+    return db.execute(
+      'SELECT G.idPrograma,numeroGrupo,G.idGrupo,nombrePrograma,GP.login, U.nombreUsuario, U.apellidoPaterno FROM grupos G ,ciclos C, programas P, grupos_terapeutas GP, usuarios U WHERE G.idCiclo=C.idCiclo AND G.idPrograma=P.idPrograma AND G.idGrupo=GP.idGrupo AND GP.login=U.login AND fechaInicial = (SELECT fechaInicial FROM ciclos WHERE idCiclo = (SELECT MAX(idCiclo) FROM ciclos WHERE idCiclo <  (SELECT MAX(idCiclo) FROM ciclos) )) AND P.idPrograma=?',
+      [idPrograma]
+    );
+  }
+
+  static fetchGruposCicloAnterior() {
+    return db.execute(
+      'SELECT G.idGrupo,numeroGrupo,G.idPrograma, T.login FROM grupos G ,ciclos C, programas P, grupos_terapeutas T WHERE G.idCiclo=C.idCiclo AND G.idPrograma=P.idPrograma AND T.idGrupo = G.idGrupo AND fechaInicial = (SELECT fechaInicial FROM ciclos WHERE idCiclo = (SELECT MAX(idCiclo) FROM ciclos WHERE idCiclo <  (SELECT MAX(idCiclo) FROM ciclos) ))'
+    );
+  }
 };

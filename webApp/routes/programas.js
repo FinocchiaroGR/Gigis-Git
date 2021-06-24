@@ -10,6 +10,8 @@ const programasController = require('../controllers/programas_controller');
 const isAuth = require('../util/is-auth.js');
 
 router.post('/registro-puntajes', isAuth, programasController.registroPuntajes);
+router.get('/cicloAnterior', isAuth, programasController.getCicloAnterior);
+router.get('/cicloAnterior/:id_programa', isAuth, programasController.getProgramasAnteriores);
 router.get('/:id_programa', isAuth, programasController.getProgramas);
 router.post('/objetivos-participante', isAuth, programasController.objetivosParticipantes);
 router.get('/', isAuth, programasController.get);
