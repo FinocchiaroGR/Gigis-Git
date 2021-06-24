@@ -191,8 +191,17 @@ fetch('/gestionAdmin/gestionCiclos/select-nivel', {
       }).then(data2 => {
         //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
         //...
+
         let html2 = '';
         //Header 
+
+        if(!$.trim(data2.objetivos)){
+          html2 += 
+                    '<p class="red-text">No puedes inscribir participantes porque no hay objetivos en este nivel.</p>' +
+                    '<a class="btn-formulario btn waves-effect blue lighten-1 right" href="/GestionAdmin/GestionProgramas/objetivos/' + idNivelObj + '">'+
+                      '<i class="material-icons right">mode_edit</i>Registrar objetivos</a>';
+        }
+        else {
         html2 += 
                     '<div>'+
                       '<br><p class="grey-text text-darken-4" ><strong>Selecciona los objetivos para asignar al participante.</strong></p>'+
@@ -262,6 +271,7 @@ fetch('/gestionAdmin/gestionCiclos/select-nivel', {
                     '</div>'+
                 '</div>';
               }
+        }
              
                                 
               
