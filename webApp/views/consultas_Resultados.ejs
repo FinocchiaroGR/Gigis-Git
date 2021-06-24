@@ -21,7 +21,7 @@
                             <p class="flow-text right">Total de resultados: <%= cantPart %></p>
                             <% let contPromGen = 1, acumPromGen = 0, cicloCont = 0, progCont = 0; %>
                             <% for(let i = 0; i<cantCol; i++) { %>
-                                <p class="flow-text">Promedio Ciclo-<%= parseInt(ciclos.ini)+cicloCont %>: <%= Math.round((consultaGen[0][col_Gen[contPromGen]['name']] ) * 10) / 10 %></p>
+                                <p class="flow-text">Promedio <%= meses[ciclos[cicloCont].Mini] %>-<%= meses[ciclos[cicloCont].MFin] %> <%= ciclos[cicloCont].Yini %> : <%= Math.round((consultaGen[0][col_Gen[contPromGen]['name']] ) * 10) / 10 %></p>
                                 <% acumPromGen += Math.round((consultaGen[0][col_Gen[contPromGen]['name']] ) * 10) / 10; %>
                                 <% contPromGen++; %>
                                 <% if(((progCont+1) % cantProg) === 0){ %>
@@ -51,7 +51,7 @@
                             <p class="flow-text right">Total de resultados: <%= datos.length %></p>
                             <% let cicloCont = 0, progCont = 0; %>
                             <% for(let i = 0; i<cantCol; i++) { %>
-                                <p class="flow-text">Promedio <%= programas[listaProg[progCont]-1].nombrePrograma %> Ciclo-<%= parseInt(ciclos.ini)+cicloCont %>: <%= Math.round((consultaGen[0][col_Gen[i+1]['name']] ) * 10) / 10 %></p>
+                                <p class="flow-text">Promedio <%= programas[listaProg[progCont]-1].nombrePrograma %> <%= meses[ciclos[cicloCont].Mini] %>-<%= meses[ciclos[cicloCont].MFin] %> <%= ciclos[cicloCont].Yini %>: <%= Math.round((consultaGen[0][col_Gen[i+1]['name']] ) * 10) / 10 %></p>
                                 <% if(((progCont+1) % listaProg.length) === 0){ %>
                                     <% progCont = 0; cicloCont++; %>
                                 <% }else{ %>

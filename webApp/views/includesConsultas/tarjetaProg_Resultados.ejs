@@ -11,7 +11,7 @@
                   <span class="card-title flow-text"><strong><%= datoGrupo.nombrePrograma %></strong></span>
               </div>
               <div class="descr-programas-consultas col s12">
-                <p style="text-align: right"><%= datoGrupo.idCiclo %></p>
+                <p style="text-align: right"><%= meses[ciclos[datoGrupo.idCiclo-1].Mini] %>-<%= meses[ciclos[datoGrupo.idCiclo-1].MFin] %> <%= ciclos[datoGrupo.idCiclo-1].Yini %></p>
                 <p >Terapeuta: <%= datoGrupo.nombreUsuario %> <%= datoGrupo.apellidoPaterno %></p>
                 <p >Num de Coincidencias: &nbsp <%= datoGrupo.TotalMatchs %></p>
                 <p >Total de Participantes: &nbsp <%= datoGrupo.TotalAlumnInscr %></p>

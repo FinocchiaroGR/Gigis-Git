@@ -21,6 +21,10 @@ module.exports = class Ciclo {
     return db.execute('SELECT * FROM ciclos');
   }
 
+  static fetchAllCfechas() {
+    return db.execute('SELECT *, YEAR(fechaInicial) AS `Yini`, MONTH(fechaInicial) AS `Mini`, YEAR(fechaFinal) AS `YFin`, MONTH(fechaFinal) AS `MFin` FROM ciclos');
+  }
+
   //Este método servirá para devolver los objetos del almacenamiento persistente.
   static idCicloActual() {
     return db.execute(
