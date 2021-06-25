@@ -255,6 +255,9 @@ CHECK (fechaInicial < fechaFinal);
 ALTER TABLE programas 
 ADD UNIQUE `nombre_unico` (`nombrePrograma`);
 
+ALTER TABLE roles 
+ADD UNIQUE `nombreRol_unico` (`nombre`);
+
 
 
 #--=========================================================================
@@ -385,83 +388,6 @@ INSERT INTO `roles_funciones` (`idRol`, `idfuncion`) VALUES ('1','15');
 #---------------------------------------------------------------------------
 #-------------------------------- Consultas --------------------------------
 #---------------------------------------------------------------------------
-
-DELIMITER $$
-
-CREATE PROCEDURE crearConsultaCalif (
-    IN `Filtrar_edad` BOOLEAN, 
-    IN `Filtrar_sexo` BOOLEAN,
-    IN `Calif_Ava` BOOLEAN,
-    IN `Ciclo_ini` INT, 
-    IN `Ciclo_fin` INT, 
-    IN `Edad_ini` INT, 
-    IN `Edad_fin` INT,
-    IN `Sexo` VARCHAR(1),
-    IN `numProg` INT, 
-    In `Programas` VARCHAR(255) 
-)
-BEGIN
-    #Crear tabla de programas TEMP
-    CALL getProgs(Programas);
-
-    #Crear tabla temporal de datos
-    SET @edIni = 0; 
-    SET @edFin = 200; 
-    IF Filtrar_edad = TRUE THEN
-        IF Filtrar_sexo = TRUE THEN
-            CALL crearTablaTempDatos1(Ciclo_ini, Ciclo_fin, Edad_ini, Edad_fin, Sexo);
-        ELSE
-            CALL crearTablaTempDatos2(Ciclo_ini, Ciclo_fin, Edad_ini, Edad_fin);
-        END IF;
-        SET @edIni = Edad_ini; 
-        SET @edFin = Edad_fin; 
-    ELSE
-        IF Filtrar_sexo = TRUE THEN
-            CALL crearTablaTempDatos3(Ciclo_ini, Ciclo_fin, Sexo);
-        ELSE
-            CALL crearTablaTempDatos4(Ciclo_ini, Ciclo_fin);
-        END IF;
-    END IF;
-
-    #Asignar login como llave primaria
-    ALTER TABLE datosPart_temp
-    ADD CONSTRAINT pk_login_partTemp
-    PRIMARY KEY (login);
-
-    #Merge de la tabla de datos con las calificaciones
-
-    SET @progCont := 0; 
-    SET @cicloCont := 0;
-    SET @x = 0; 
-    REPEAT 
-        SET @x = @x + 1; 
-        IF Calif_Ava = TRUE THEN
-            CALL mergeTablaCalif_datos ((Ciclo_ini + @cicloCont), (SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1), @x, @edIni, @edFin);
-        ELSE
-            CALL mergeTablaAva_datos ((Ciclo_ini + @cicloCont), (SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1), @x, @edIni, @edFin);
-        END IF;
-
-        if(((@progCont+1) % numProg) = 0) THEN 
-            SET @progCont := 0; 
-            SET @cicloCont := @cicloCont +1;
-        ELSE
-            SET @progCont := @progCont +1;
-        END IF;
-    UNTIL @x >= ((Ciclo_fin-Ciclo_ini+1)*numProg) 
-    END REPEAT;
-
-    DROP TABLE IF EXISTS ultimaConsulta;
-
-    SET @sql = CONCAT('CREATE TABLE `ultimaConsulta` AS SELECT * FROM datosPart_temp',CAST(@x AS CHAR)); 
-    PREPARE stmt FROM @sql; 
-    EXECUTE stmt; 
-    DEALLOCATE PREPARE stmt; 
-END
-$$
-
-DELIMITER ;              
-
-#--------------------------------------------------------------------------
 
 DELIMITER $$
 
@@ -636,6 +562,83 @@ END
 $$
 
 DELIMITER ;
+
+#--------------------------------------------------------------------------
+
+DELIMITER $$
+
+CREATE PROCEDURE crearConsultaCalif (
+    IN `Filtrar_edad` BOOLEAN, 
+    IN `Filtrar_sexo` BOOLEAN,
+    IN `Calif_Ava` BOOLEAN,
+    IN `Ciclo_ini` INT, 
+    IN `Ciclo_fin` INT, 
+    IN `Edad_ini` INT, 
+    IN `Edad_fin` INT,
+    IN `Sexo` VARCHAR(1),
+    IN `numProg` INT, 
+    In `Programas` VARCHAR(255) 
+)
+BEGIN
+    #Crear tabla de programas TEMP
+    CALL getProgs(Programas);
+
+    #Crear tabla temporal de datos
+    SET @edIni = 0; 
+    SET @edFin = 200; 
+    IF Filtrar_edad = TRUE THEN
+        IF Filtrar_sexo = TRUE THEN
+            CALL crearTablaTempDatos1(Ciclo_ini, Ciclo_fin, Edad_ini, Edad_fin, Sexo);
+        ELSE
+            CALL crearTablaTempDatos2(Ciclo_ini, Ciclo_fin, Edad_ini, Edad_fin);
+        END IF;
+        SET @edIni = Edad_ini; 
+        SET @edFin = Edad_fin; 
+    ELSE
+        IF Filtrar_sexo = TRUE THEN
+            CALL crearTablaTempDatos3(Ciclo_ini, Ciclo_fin, Sexo);
+        ELSE
+            CALL crearTablaTempDatos4(Ciclo_ini, Ciclo_fin);
+        END IF;
+    END IF;
+
+    #Asignar login como llave primaria
+    ALTER TABLE datosPart_temp
+    ADD CONSTRAINT pk_login_partTemp
+    PRIMARY KEY (login);
+
+    #Merge de la tabla de datos con las calificaciones
+
+    SET @progCont := 0; 
+    SET @cicloCont := 0;
+    SET @x = 0; 
+    REPEAT 
+        SET @x = @x + 1; 
+        IF Calif_Ava = TRUE THEN
+            CALL mergeTablaCalif_datos ((Ciclo_ini + @cicloCont), (SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1), @x, @edIni, @edFin);
+        ELSE
+            CALL mergeTablaAva_datos ((Ciclo_ini + @cicloCont), (SELECT idPrograma FROM listProg_temp WHERE contProg = @progCont+1), @x, @edIni, @edFin);
+        END IF;
+
+        if(((@progCont+1) % numProg) = 0) THEN 
+            SET @progCont := 0; 
+            SET @cicloCont := @cicloCont +1;
+        ELSE
+            SET @progCont := @progCont +1;
+        END IF;
+    UNTIL @x >= ((Ciclo_fin-Ciclo_ini+1)*numProg) 
+    END REPEAT;
+
+    DROP TABLE IF EXISTS ultimaConsulta;
+
+    SET @sql = CONCAT('CREATE TABLE `ultimaConsulta` AS SELECT * FROM datosPart_temp',CAST(@x AS CHAR)); 
+    PREPARE stmt FROM @sql; 
+    EXECUTE stmt; 
+    DEALLOCATE PREPARE stmt; 
+END
+$$
+
+DELIMITER ;              
 
 #--------------------------------------------------------------------------
 

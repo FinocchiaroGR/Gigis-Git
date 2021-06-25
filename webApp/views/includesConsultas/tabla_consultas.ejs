@@ -15,7 +15,8 @@
 
             <% let cicloCont = 0, progCont = 0; %>
             <% for(let i = 0; i<cantCol; i++) { %>
-              <td class="center" colspan="2"><strong><%= datosGrupos[0].nombrePrograma %> Ciclo-<%= ciclos.ini+cicloCont %> </strong></td>
+              
+              <td class="center" colspan="2"><strong><%= datosGrupos[0].nombrePrograma %> <%= meses[ciclos[cicloCont].Mini] %>-<%= meses[ciclos[cicloCont].MFin] %> <%= ciclos[cicloCont].Yini %> </strong></td>
               
               <% if(((progCont+1) % cantProg) === 0){ %>
                 <% progCont = 0; cicloCont++;%>
@@ -99,7 +100,7 @@
               <% let cicloCont = 0, progCont = 0;%>
               <% for(let i = 0; i<cantCol; i++) { %>
 
-                <td class="center" colspan="2"> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br>Ciclo-<%= ciclos.ini+cicloCont %> </td>
+                <td class="center" colspan="2"> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br><%= meses[ciclos[cicloCont].Mini] %>-<%= meses[ciclos[cicloCont].MFin] %> <%= ciclos[cicloCont].Yini %> </td>
 
                 <% if(((progCont+1) % cantProg) === 0){%>
                   <% progCont = 0; cicloCont++;%>
@@ -135,7 +136,7 @@
               <% let cicloCont = 0, progCont = 0;%>
               <% for(let i = 0; i<cantCol; i++) { %>
 
-                <td class="center">Avance <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br>Ciclo-<%= ciclos.ini+cicloCont %> </td>
+                <td class="center">Avance <br> <%= programas[listaProg[progCont]-1].nombrePrograma %> <br> <%= meses[ciclos[cicloCont].Mini] %>-<%= meses[ciclos[cicloCont].MFin] %> <%= ciclos[cicloCont].Yini %> </td>
             
                 <% if(((progCont+1) % cantProg) === 0){%>
                   <% progCont = 0; cicloCont++;%>

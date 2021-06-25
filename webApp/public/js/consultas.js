@@ -164,7 +164,7 @@ const buscarHistorial = () => {
             let html = '<table class="striped highlight responsive-table">'+-
                         +'<thead><tr>'+
                         '<td>Programa</td>'+
-                        //'<td>Periodo</td>'+
+                        '<td>Periodo</td>'+
                         '<td>Terapeuta</td>'+
                         '<td>Calificación Inicial</td>'+
                         '<td>Calificación Final</td>'+
@@ -174,7 +174,7 @@ const buscarHistorial = () => {
             for (let programa of data.historial) {
                 html += '<tr>'+
                         '<td>'+programa.nombrePrograma+'</td>'+
-                        //'<td>'+programa.FechaInicial+'-'+programa.FechaFinal+'</td>'+
+                        '<td>'+programa.FechaInicial+'-'+programa.FechaFinal+'</td>'+
                         '<td>'+programa.nombreMaestro+' '+programa.apellidoPMaestro+' '+programa.apellidoMMaestro+'</td>'+
                         '<td>'+(Math.round((programa.CalifInicial) * 10) / 10)+'</td>'+
                         '<td>'+(Math.round((programa.CalifFinal) * 10) / 10)+'</td>'+

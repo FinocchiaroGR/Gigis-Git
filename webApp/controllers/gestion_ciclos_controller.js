@@ -356,6 +356,9 @@ exports.getEditarCiclo = (request,response,next) => {
     if(permisos.includes(11)) {
         Ciclo.fetchFechaFinalUltimoCicloSinContar(request.params.idCiclo)
         .then(([fechaLimite, fieldData1]) => {
+            if(fechaLimite.length === 0){
+                fechaLimite = '2000-01-01'
+            }
             Ciclo.fetchUnoPorId(request.params.idCiclo)
                 .then(([ciclo, fieldData1]) => {
                     let meses = ciclo[0].fechaFinal.getMonth() === ciclo[0].fechaInicial.getMonth() ? mes[ciclo[0].fechaInicial.getMonth()] : abvMes[ciclo[0].fechaInicial.getMonth()] + '-'+ abvMes[ciclo[0].fechaFinal.getMonth()];

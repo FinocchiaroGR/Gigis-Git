@@ -127,8 +127,10 @@ fetch('/gestionAdmin/gestionCiclos/select-nivel', {
   //...
   let html = '';
   //Header 
+  let apellidoP =  data.usuarios[0].apellidoPaterno === null? '&nbsp;':  data.usuarios[0].apellidoPaterno === 'null'? '&nbsp;': data.usuarios[0].apellidoPaterno;
+  let apellidoM =  data.usuarios[0].apellidoMaterno === null? '&nbsp;': data.usuarios[0].apellidoMaterno === 'null'? '&nbsp;': data.usuarios[0].apellidoMaterno;            
   html = '<div class="row">' +
-          '<h6>Inscribir a: ' + data.usuarios[0].nombreUsuario +' '+data.usuarios[0].apellidoPaterno + ' ' + data.usuarios[0].apellidoMaterno  + '</h6>';
+          '<h6>Inscribir a: ' + data.usuarios[0].nombreUsuario +' '+apellidoP + ' ' + apellidoM  + '</h6>';
   //Registro nivel
   
     html +=   
@@ -191,8 +193,19 @@ fetch('/gestionAdmin/gestionCiclos/select-nivel', {
       }).then(data2 => {
         //Modificamos el DOM de nuestra página de acuerdo a los datos de la segunda promesa
         //...
+
         let html2 = '';
         //Header 
+
+        let todosobj = 0;
+        let selectobj = 0;
+        if(!$.trim(data2.objetivos)){
+          html2 += 
+                    '<p class="red-text">No puedes inscribir participantes porque no hay objetivos en este nivel.</p>' +
+                    '<a class="btn-formulario btn waves-effect blue lighten-1 right" href="/GestionAdmin/GestionProgramas/objetivos/' + idNivelObj + '">'+
+                      '<i class="material-icons right">mode_edit</i>Registrar objetivos</a>';
+        }
+        else {
         html2 += 
                     '<div>'+
                       '<br><p class="grey-text text-darken-4" ><strong>Selecciona los objetivos para asignar al participante.</strong></p>'+
@@ -208,8 +221,6 @@ fetch('/gestionAdmin/gestionCiclos/select-nivel', {
                             '</label>'+  
                           '</td>'+
                         '</tr>'; 
-                      let todosobj= 0;
-                      let selectobj = 0;
                       let participanteInscrito = false;
                       for (let obj of data2.objetivos){ 
                         todosobj += 1;
@@ -262,13 +273,14 @@ fetch('/gestionAdmin/gestionCiclos/select-nivel', {
                     '</div>'+
                 '</div>';
               }
+        }
              
                                 
               
         let id2 = "objetivos-participante-grupo-"+idGrupo;
         document.getElementById(id2).innerHTML = html2;
         M.AutoInit();
-        if(selectobj === todosobj){
+        if(selectobj === todosobj && todosobj != 0){
           document.getElementById("selTodos").checked = true;
         }
 

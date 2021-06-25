@@ -2,6 +2,15 @@
 <%- include('include/titleBar.ejs') %>
 <%-include('include/sideNavBar.ejs') %>
 
+  <div class="row">
+    <div class="input-field col s12">
+      <!-- Modal Agregar -->
+      <% if (permisos.includes(8)) { %>
+        <a class="btn-small modal-trigger light-green accent-4 right" name="cicloAnterior" href="<%= rutaCiclo %>"><i class="material-icons left">cached</i>Ciclo <%= botonCiclo %></a>
+      <% } %>
+    </div>
+  </div>
+
 <div class="row" id="lista_programas">
   <!------------------Fila 1 ------------------------>
   <% for (programa of programas){
@@ -24,7 +33,7 @@
             <img src="../<%=programa.dirImagen%>" width="316.3px" height="205.18px">
           </div>
           <div class="card-content">
-            <a href="<%= programa.idPrograma %>">
+            <a href="<%= rutaAnterior %><%= programa.idPrograma %>">
               <span class="card-title"><%= programa.nombrePrograma%></span>
             </a>
             <br />

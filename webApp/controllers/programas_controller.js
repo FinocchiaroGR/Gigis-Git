@@ -5,6 +5,7 @@ const Participante_Grupo_Objetivo = require('../models/participantes_grupos_obje
 const Usuario = require('../models/usuarios')
 const arrows = Arrow.fetchAll();
 const arrayToLinkedlist = require('array-to-linkedlist');
+const { response } = require('express');
 
 exports.getProgramas = (request, response, next) => {
   const permiso = request.session.permisos;
@@ -41,6 +42,62 @@ exports.getProgramas = (request, response, next) => {
                     calificaciones: listaCalificaciones,
                     permisos: request.session.permisos,
                     backArrow: { display: 'block', link: '/programas' },
+                    forwArrow: arrows[1]
+                  });
+                }).catch((err) => {
+                  console.log(err);
+                })
+            }).catch((err) => {
+              console.log(err);
+            })
+        }
+        else {
+          response.status(404);
+          response.send('Lo sentimos, este sitio no existe');
+        }
+      }).catch((err) => {
+          console.log(err);
+      })
+    }).catch((err) => {
+      console.log(err);
+  })
+}
+
+exports.getProgramasAnteriores = (request, response, next) => {
+  const permiso = request.session.permisos;
+  const rol = request.session.rol;
+  const usuario = request.session.user;
+  let existeTerapeuta = 0;
+  const idPrograma = request.params.id_programa;
+  const programasParticipante = request.session.programasParticipante;
+  Programa.fetchNombreProgama(idPrograma)
+    .then(([programa, fieldData]) => {
+      Grupo.fethcGruposProgramaAnterior(idPrograma)
+      .then(([grupos, fieldData1]) => {
+        for (let grupo of grupos) {
+          if (grupo.login === usuario)
+            existeTerapeuta = 1;
+        }
+        if(existeTerapeuta || programasParticipante.includes(parseInt(idPrograma)) || rol === 4) {
+          Participante_Grupo_Objetivo.fetchParticipantesPorProgramaAnterior(idPrograma)
+            .then(([participantes,fieldData2]) => {
+              Participante_Grupo_Objetivo.calificacionesPorProgramaAnterior(idPrograma)
+                .then(([calificaciones, fieldData3]) => {
+                  const listaGrupos = arrayToLinkedlist(grupos);
+                  const listaParticipantes = arrayToLinkedlist(participantes);
+                  const listaCalificaciones = arrayToLinkedlist(calificaciones);
+                  response.render('programas_programa1', {
+                    tituloDeHeader: programa[0].nombrePrograma,
+                    tituloBarra: programa[0].nombrePrograma,
+                    programa: idPrograma,
+                    puntajeMax: programa[0].puntajeMaximo,
+                    grupos: listaGrupos,
+                    rol: rol,
+                    usuario: usuario,
+                    participantes: listaParticipantes,
+                    calificaciones: listaCalificaciones,
+                    permisos: request.session.permisos,
+                    backArrow: { display: 'block', link: '/programas/cicloAnterior' },
                     forwArrow: arrows[1]
                   });
                 }).catch((err) => {
@@ -128,7 +185,10 @@ exports.get = (request, response, next) => {
         Grupo.fetchGruposCicloActual()
           .then(([grupos, fieldData2]) => {
             response.render('programas', {
+              botonCiclo: 'anterior',
+              rutaCiclo: './cicloAnterior',
               tituloDeHeader: 'Programas',
+              rutaAnterior: './',
               tituloBarra: 'Programas',
               programas: programas,
               grupos: grupos,
@@ -151,3 +211,49 @@ exports.get = (request, response, next) => {
 };
 
  
+exports.getCicloAnterior = (request, response) => {
+  const permiso = request.session.permisos;
+  const rol = request.session.rol;
+  const usuario = request.session.user;
+  request.session.programasParticipante = [];
+
+  if(permiso.includes(15)){ 
+    Programa.fetchProgramasCicloAnterior()
+      .then(([programas, fieldData1]) => {
+        (async() => { 
+          for (let programa of programas) {
+            await Participante_Grupo_Objetivo.fetchParticipantesPorPrograma(programa.idPrograma)
+              .then(([participantes, fieldData3]) => {
+                for (let participante of participantes)
+                  if (usuario === participante.login)
+                  request.session.programasParticipante.push(programa.idPrograma)
+              })
+              .catch((err) => console.log(err));
+          }
+        Grupo.fetchGruposCicloAnterior()
+          .then(([grupos, fieldData2]) => {
+            response.render('programas', {
+              botonCiclo: 'actual',
+              rutaCiclo: './',
+              tituloDeHeader: 'Programas del ciclo anterior',
+              tituloBarra: 'Programas del ciclo anterior',
+              rutaAnterior: './cicloAnterior/',
+              programas: programas,
+              grupos: grupos,
+              rol: rol,
+              usuario: usuario,
+              programasParticipante: request.session.programasParticipante,
+              permisos: request.session.permisos,
+              backArrow: arrows[0],
+              forwArrow: arrows[1],
+            });
+          })
+          .catch((err) => console.log(err));
+        })();
+      })
+      .catch((err) => console.log(err));
+  }
+  else {
+    return response.redirect('/consultas');
+  }
+};
