@@ -8,11 +8,13 @@ node_modules/
 dist/
 uploads/
 downloads/
-~$util/secret2.js
+webApp/downloads/
+webApp/uploads/
+webApp/util/secret2.js
+webApp/util/secret.js
 
 # CSV files
-#*.csv
-
+*.csv
 
 # Compiled Java class files
 *.class
